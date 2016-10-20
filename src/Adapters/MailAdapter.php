@@ -18,9 +18,9 @@ class MailAdapter implements AdapterInterface
      */
     function __construct($options)
     {
-        $options['to'] = config('mail.from.address');
-        $options['from'] = config('mail.from.name');
-        $options['subject'] = config('mail.from.subject');
+        $options['to'] = config('notify.mail.address');
+        $options['from'] = config('notify.mail.name');
+        $options['subject'] = config('notify.mail.subject');
         $this->options = $options;
     }
 

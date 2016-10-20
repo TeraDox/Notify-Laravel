@@ -4,7 +4,7 @@ return [
     'default' => 'slack',
 
 
-    'from' => [
+    'mail' => [
         'address' => env('MAIL_USERNAME'),
         'name' => env('MESSAGE_NAME'),
         'subject' => 'This is Title!'
