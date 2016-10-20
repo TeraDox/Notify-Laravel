@@ -20,6 +20,9 @@ class NotifyServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->app->bind('notify.laravel', function($app) {
+            return new Notify();
+        });
 
     }
 
