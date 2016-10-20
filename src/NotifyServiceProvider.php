@@ -7,6 +7,9 @@ use Illuminate\Support\ServiceProvider;
 
 class NotifyServiceProvider extends ServiceProvider
 {
+    /**
+     * Publishes notify.php config file and mail.php view file.
+     */
     public function boot()
     {
         $this->publishes([__DIR__ . '/config/config.php' => config_path('notify.php')]);
@@ -18,6 +21,9 @@ class NotifyServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * Register for Facade. Facade uses default constructor.
+     */
     public function register()
     {
         $this->app->bind('notify.laravel', function($app) {

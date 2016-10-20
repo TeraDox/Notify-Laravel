@@ -174,7 +174,7 @@ class SlackAdapter implements AdapterInterface
     }
 
     /**
-     * return bool values according to env file.
+     * return bool values according to .env file.
      * @return bool
      */
     function isOn()
