@@ -1,5 +1,5 @@
 {
-    "name": "rikeda/notify-laravel",
+    "name": "tdx-rikeda/notify-laravel",
     "description": "send notifications from laravel",
     "type": "library",
     "require": {
@@ -10,7 +10,7 @@
     "license": "BSD",
     "authors": [
         {
-            "name": "r.ikeda",
+            "name": "tdx-rikeda",
             "email": "r.ikeda@teradox.net"
         }
     ],
@@ -18,5 +18,13 @@
         "psr-4": {
             "Notify\\Laravel\\" : "src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan vendor:publish"
+        ],
+        "post-update-cmd": [
+            "php artisan vendor:publish"
+        ]
     }
 }
