@@ -7,7 +7,7 @@
         "laravel/framework": "5.3.*",
         "maknz/slack": "^1.7"
     },
-    "license": "MIT",
+    "license": "BSD",
     "authors": [
         {
             "name": "r.ikeda",
