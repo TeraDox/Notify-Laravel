@@ -18,13 +18,5 @@
         "psr-4": {
             "Notify\\Laravel\\" : "src/"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "php artisan vendor:publish"
-        ],
-        "post-update-cmd": [
-            "php artisan vendor:publish"
-        ]
     }
 }
