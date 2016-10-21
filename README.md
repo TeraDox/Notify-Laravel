@@ -14,13 +14,13 @@ For Laravel, use this class in a Exceptions\Handler.php class.
 
 There are 4 steps to use this package.
 
-1. Use composer to install this package.
+*1. Use composer to install this package.
 
 ```
 composer require tdx-rikeda/notify-laravel
 ```
 
-2. Add 'provider' and 'alias' for config\app.php.
+*2. Add 'provider' and 'alias' for config\app.php.
 ```
 'providers' => [ ...
         Maknz\Slack\SlackServiceProvider::class,
@@ -33,12 +33,12 @@ composer require tdx-rikeda/notify-laravel
         ],
 ```
 
-3. Publish necessary config and view files.
+*3. Publish necessary config and view files.
 ```
 php artisan vendor:publish
 ```
 
-4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account.
+*4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account.
 
 
 ## Settings
