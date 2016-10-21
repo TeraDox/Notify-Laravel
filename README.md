@@ -66,6 +66,8 @@ and add
 MESSAGE_NOTIFY_SLACK=1
 MESSAGE_NOTIFY_MAIL=1
 ```
+If the value = 1, the adapter is turned on (The adapter can send a message). If the value = 0, the adapter is turned off (The adapter cannot send a message). If there is no value defined in .env file, 0 is used as default.
+
 
 ## How to send Messages
 * Sending messages from Facade.
@@ -81,9 +83,8 @@ Notify::send($exceptionOrText, $options, 'mail'); // keys of options array for M
 
 ```
 $notify = new Notify(); // instance of Notify with default setting.
-$notify->setTo($address);
-$notify->setFrom($username);
-$notify->setAdapter($slackOrMail);
-$notify->send($exceptionOrText);
-Notify::send($text, $options, 'slack'); 
+$notify->setTo($address); // change address. (channel or userid for slack)
+$notify->setFrom($username); // change username on the message.
+$notify->setAdapter($slackOrMail); // set adapter to slack or mail
+$notify->send($exceptionOrText); // send message
 ```
