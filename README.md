@@ -17,7 +17,7 @@ There are 4 steps to use this package.
 *1. Use composer to install this package.
 
 ```
-composer require tdx-rikeda/notify-laravel
+composer require tdx/notify-laravel
 ```
 
 *2. Add 'provider' and 'alias' for config\app.php.
