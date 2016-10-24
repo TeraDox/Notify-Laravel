@@ -1,5 +1,5 @@
 {
-    "name": "tdx-rikeda/notify-laravel",
+    "name": "tdx/notify-laravel",
     "description": "send notifications from laravel",
     "type": "library",
     "require": {
@@ -8,12 +8,6 @@
         "maknz/slack": "^1.7"
     },
     "license": "BSD",
-    "authors": [
-        {
-            "name": "tdx-rikeda",
-            "email": "r.ikeda@teradox.net"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Notify\\Laravel\\" : "src/"
