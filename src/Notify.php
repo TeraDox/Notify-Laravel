@@ -11,6 +11,7 @@ class Notify
 
     protected $adapter; // adapter that is going to be used to send message. (e.g. email or slack)
     protected $options; // array of options.
+    protected $maxRetry = 2; // number of retries
 
 
     /**
@@ -53,8 +54,40 @@ class Notify
         $adapter = $adapter ? $this->createAdapter($adapter) : $this->adapter;
         $this->adapter = $adapter;
 
-        if($adapter->isOn()){
-            $adapter->send($content, $options);
+        if ($adapter->isOn()) {
+            try {
+                $adapter->send($content, $options);
+            } catch (NotifyException $e) {
+                $maxRetry = $this->maxRetry;
+                $this->retry($adapter, $content, $options, $maxRetry);
+            }
+
+        }
+    }
+
+    /**
+     * Retry sending a content again $maxRetry times unless it correctly sends a content.
+     * @param $adapter
+     * @param $content
+     * @param $options
+     * @param $maxRetry number of retries.
+     * @throws NotifyException
+     */
+    private function retry($adapter, $content, $options, $maxRetry)
+    {
+        $retryCount = 0;
+        while ($retryCount < $maxRetry){
+            $retryCount++;
+            sleep(2); // retry per 2 seconds
+
+            try {
+                $adapter->send($content, $options);
+                break;
+            } catch (NotifyException $e) {
+                if ($retryCount == $maxRetry) {
+                    throw new NotifyException($e);
+                }
+            }
         }
     }
 
