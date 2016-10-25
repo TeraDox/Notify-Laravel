@@ -45,6 +45,12 @@ php artisan vendor:publish --provider="Maknz\Slack\SlackServiceProviderLaravel5"
 // add --force option to overwrite previously published files.
 ```
 
+These commands should create 
+/config/notify.php, 
+/resources/views/vendor/notify/mail.blade.php,
+/config/slack.php
+
+
 If these publish commands does not work, try 
 ```
 php artisan config:clear
