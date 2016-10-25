@@ -118,12 +118,14 @@ In App\Exceptions\Handler class,
 
         } catch(NotifyException $e) {
             // NotifyException is caught. Default settings have a problem.
+            
             try {
                 // send via mail
                 Notify::send($e, ['to' => YOUR_EMAIL_ADDRESS, 'from' => 'TestBot', 'subject' => "Test Message"], 'mail');
             } catch (NotifyException $ne) {
                 // Problem of mail settings. Dont't use Notify class here to avoid loop.
             }
+            
         } 
     }
 ```
