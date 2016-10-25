@@ -7,7 +7,7 @@ return [
     'mail' => [
         'address' => env('MAIL_USERNAME'),
         'name' => env('MESSAGE_NAME'),
-        'subject' => 'This is Title!'
+        'subject' => 'This is Subject!'
     ],
 
     /*
