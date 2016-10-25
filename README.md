@@ -42,6 +42,7 @@ If you want to publish only related files for this package,
 ```
 php artisan vendor:publish --tag='notify-laravel'
 php artisan vendor:publish --provider="Maknz\Slack\SlackServideProviderLaravel5"
+// add --force option to overwrite previously published files.
 ```
 
 If these publish commands does not work, try 
@@ -101,3 +102,23 @@ $notify->setFrom($username); // change username on the message.
 $notify->setAdapter($slackOrMail); // set adapter to slack or mail
 $notify->send($exceptionOrText); // send message
 ```
+
+## Example of Implementation using Laravel Exception Handler
+
+In App\Exceptions\Handler class,
+```
+    public function report(Exception $exception)
+    {
+        parent::report($exception);
+
+        try {
+            // Use Notify class here.
+            // Below is a simple example.
+            Notify::send($exception);
+
+        } catch(NotifyException $e) {
+            // NotifyException is caught. Dont't use Notify class here. (Loop may be happened.)
+        }
+    }
+```
+    
