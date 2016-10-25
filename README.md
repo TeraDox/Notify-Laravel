@@ -1,8 +1,8 @@
 # Notify-Laravel
-A simple PHP package for sending notifications from laravel to [Slack](https://slack.com) with [incoming webhooks](https://my.slack.com/services/new/incoming-webhook) or email.
-This package will handle an instance of exception object and string text message.
-While sending an exception as an message, it will attach an information of "user agent" and "request uri".
-For Laravel, use this class in a Exceptions\Handler.php class.
+A simple PHP package for sending notifications from laravel via [Slack](https://slack.com) with [incoming webhooks](https://my.slack.com/services/new/incoming-webhook) or via email.
+This package will automatically format an instance of exception object or string text message.
+While sending an exception as a message, it will attach an information of "user agent" and "request uri".
+For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 
 ## Requirements
 
@@ -24,21 +24,35 @@ composer require tdx/notify-laravel
 ```
 'providers' => [ ...
         Maknz\Slack\SlackServiceProvider::class,
-        Notify\Laravel\NotifyServiceProvider::class, ...
-        ],
+        Notify\Laravel\NotifyServiceProvider::class,
+        ...],
         
 'aliases' => [ ...
         'Slack' => Maknz\Slack\Facades\Slack::class,
-        'Notify' => Notify\Laravel\Facades\Notify::class, ...
-        ],
+        'Notify' => Notify\Laravel\Facades\Notify::class,
+        ...],
 ```
 
 *3. Publish necessary config and view files.
 ```
 php artisan vendor:publish
 ```
+OR, 
+If you want to publish only related files for this package,
+```
+php artisan vendor:publish --tag='notify-laravel'
+php artisan vendor:publish --provider="Maknz\Slack\SlackServideProviderLaravel5"
+// add --force option to overwrite previously published files.
+```
 
-*4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account.
+If these publish commands does not work, try 
+```
+php artisan config:clear
+```
+It will clear the config cache.
+
+
+*4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account. You need to write Webhook URL in config\slack.php file to send a message via Slack. 
 
 
 ## Settings
@@ -46,9 +60,9 @@ Write values for some config files.
 
 In config\slack.php,
 ```
-'endpoint'
-'channel'
-'username'
+'endpoint'= //webhook URL for your incoming webhook
+'channel'= //channnel or username where you want to send a message
+'username'= // username that is going to be displayed on the message
 ```
 
 In .env, set suitable values for mail,
@@ -88,3 +102,23 @@ $notify->setFrom($username); // change username on the message.
 $notify->setAdapter($slackOrMail); // set adapter to slack or mail
 $notify->send($exceptionOrText); // send message
 ```
+
+## Example of Implementation using Laravel Exception Handler
+
+In App\Exceptions\Handler class,
+```
+    public function report(Exception $exception)
+    {
+        parent::report($exception);
+
+        try {
+            // Use Notify class here.
+            // Below is a simple example.
+            Notify::send($exception);
+
+        } catch(NotifyException $e) {
+            // NotifyException is caught. Dont't use Notify class here. (Loop may be happened.)
+        }
+    }
+```
+    
