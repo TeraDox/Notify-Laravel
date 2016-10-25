@@ -85,6 +85,7 @@ class Notify
                 break;
             } catch (NotifyException $e) {
                 if ($retryCount == $maxRetry) {
+                    // retries are all failed. Throw NotifyException.
                     throw new NotifyException($e);
                 }
             }
