@@ -8,7 +8,6 @@ use Notify\Laravel\Exception\NotifyException;
 
 class Notify
 {
-
     protected $adapter; // adapter that is going to be used to send message. (e.g. email or slack)
     protected $options; // array of options.
     protected $maxRetry = 2; // number of retries
@@ -51,6 +50,12 @@ class Notify
      */
     function send($content, $options = [], $adapter = "")
     {
+        $force = (isset($options['force']) && $options['force'] == 1) ? true : false;
+        if (!$force && !config('notify.active')) {
+            return;
+        }
+
+
         $adapter = $adapter ? $this->createAdapter($adapter) : $this->adapter;
         $this->adapter = $adapter;
 
@@ -61,8 +66,14 @@ class Notify
                 $maxRetry = $this->maxRetry;
                 $this->retry($adapter, $content, $options, $maxRetry);
             }
-
         }
+        return true;
+    }
+
+    public function force($content, $options = [], $adapter = "")
+    {
+        $options['force'] = true;
+        return $this->send($content, $options, $adapter);
     }
 
     /**
