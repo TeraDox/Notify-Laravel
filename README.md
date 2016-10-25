@@ -41,7 +41,7 @@ OR,
 If you want to publish only related files for this package,
 ```
 php artisan vendor:publish --tag='notify-laravel'
-php artisan vendor:publish --provider="Maknz\Slack\SlackServideProviderLaravel5"
+php artisan vendor:publish --provider="Maknz\Slack\SlackServiceProviderLaravel5"
 // add --force option to overwrite previously published files.
 ```
 
