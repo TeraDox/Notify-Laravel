@@ -102,7 +102,6 @@ class Notify
             $this->sendWithRetry($content, $options, $adapter, $options['max_retry']);
         } else {
             $this->sendWithRetry($content, $options, $adapter);
-            dd(2);
         }
 
         return true;
@@ -118,7 +117,7 @@ class Notify
      * @param int $retryCount current number of retries.
      * @throws NotifyException
      */
-    private function sendWithRetry($content, $options, $adapter, $maxRetryCount = 1, $retryCount = 0)
+    private function sendWithRetry($content, $options, $adapter, $maxRetryCount = 3, $retryCount = 0)
     {
         if ($retryCount == $maxRetryCount) {
             // retries are all failed. Throw NotifyException.
@@ -129,7 +128,6 @@ class Notify
             } catch (\Exception $exception) {
                 $retryCount++;
 //                sleep(2); // retry per 2 seconds
-//                dd([$adapter, $content, $options, $maxRetryCount, $retryCount]);
 
                 $this->sendWithRetry($content, $options, $adapter, $maxRetryCount, $retryCount);
 

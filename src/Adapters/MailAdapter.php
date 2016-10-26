@@ -18,7 +18,9 @@ class MailAdapter implements AdapterInterface
      */
     function __construct($options)
     {
-        $options['to'] = config('notify.mail.address');
+        if($this->isCorrect(config('notify.mail.address'))){
+            $options['to'] = config('notify.mail.address');
+        }
         $options['from'] = config('notify.mail.name');
         $options['subject'] = config('notify.mail.subject');
         $this->options = $options;
@@ -34,6 +36,10 @@ class MailAdapter implements AdapterInterface
      */
     function send($content, $options)
     {
+        if(isset($options['to'])){
+            $this->setTo($options['to']);
+        }
+
         if (!$options) {
             $options = $this->options;
         } else {
@@ -110,11 +116,12 @@ class MailAdapter implements AdapterInterface
      */
     private function isCorrect($to)
     {
-        if (preg_match('/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/', $to)) {
-            return true;
-        } else {
+        $validator = \Validator::make(['email' => $to], ['email' => 'required|email']);
+        if ($validator->fails()) {
             return false;
         }
+        return true;
+
     }
 
 
@@ -128,7 +135,7 @@ class MailAdapter implements AdapterInterface
         if ($this->isCorrect($address)) {
             $this->options['to'] = $address;
         } else {
-            throw new NotifyException(new \Exception("Input address is in a wrong format."));
+            throw new NotifyException(new \Exception("Input Address is in a Wrong Format."));
         }
     }
 

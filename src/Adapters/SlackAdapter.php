@@ -35,6 +35,10 @@ class SlackAdapter implements AdapterInterface
      */
     function send($content, $options)
     {
+        if (isset($options['to'])) {
+            $this->setTo($options['to']);
+        }
+
         $message = Slack::createMessage();
 
         if(!$options){
