@@ -130,9 +130,8 @@ In App\Exceptions\Handler class,
                 Notify::send($e, ['to' => YOUR_EMAIL_ADDRESS, 'from' => 'TestBot', 'subject' => "Test Message"], 'mail');
             } catch (NotifyException $ne) {
                 // Problem of mail settings. Dont't use Notify class here to avoid loop.
+                parent::report($ne);
             }
-                    parent::report($exception);
-            
         } 
     }
 ```
