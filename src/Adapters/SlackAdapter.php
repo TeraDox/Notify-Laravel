@@ -55,10 +55,12 @@ class SlackAdapter implements AdapterInterface
 
         if($content instanceof \Exception) {
             // exception
-            $fields =
-                [new AttachmentField(['title' => 'HTTP_USER_AGENT', 'value' => $options['fields'][0]]),
-                    new AttachmentField(['title' => 'REQUEST_URI', 'value' => $options['fields'][1]])];
-
+            $fields = [];
+            if (isset($options['fields'])) {
+                $fields =
+                    [new AttachmentField(['title' => 'HTTP_USER_AGENT', 'value' => $options['fields'][0]]),
+                        new AttachmentField(['title' => 'REQUEST_URI', 'value' => $options['fields'][1]])];
+            }
             $message = $this->exceptionMessage($message, $fields, $content);
 
         } else {
@@ -95,7 +97,12 @@ class SlackAdapter implements AdapterInterface
      */
     private function exceptionMessage($message, $fields, \Exception $exception)
     {
-        $message->setText("*" . get_class($exception) . "* in `" . $exception->getFile() . "` line: " . $exception->getLine());
+        $className = get_class($exception);
+        if ($exception instanceof NotifyException) {
+            $className = "NotifyException";
+        }
+
+        $message->setText("*" . $className. "* in `" . $exception->getFile() . "` line: " . $exception->getLine());
 
         $trace = $exception->getTraceAsString();
         if(strlen($trace) > 1000) {
@@ -109,7 +116,9 @@ class SlackAdapter implements AdapterInterface
             'text' => $trace,
 
         ]);
-        $attachment->setFields($fields);
+        if ($fields) {
+            $attachment->setFields($fields);
+        }
         $message->attach($attachment);
         return $message;
     }

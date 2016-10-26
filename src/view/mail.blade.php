@@ -13,7 +13,7 @@
         </p>
       @endforeach
   @else
-    <p style="font-size: 14px; font-style: italic;"><b><u>{{ $errorName }}</u></b></p>
+    <p style="font-size: 14px; font-style: italic;"><b><u>{{ $errorName }}</u></b> {{ $errorPlace }}</p>
     <p><b>{{ $errorTitle }}</b></p>
     <p>
     @foreach ($trace as $row)

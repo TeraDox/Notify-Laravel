@@ -43,13 +43,13 @@ class MailAdapter implements AdapterInterface
                 }
             }
         }
-
         if($content instanceof \Exception) {
             // exception
             $data = $this->exceptionMessage($content);
-            $data['userAgent'] = $options['fields'][0];
-            $data['requestUri'] = $options['fields'][1];
-
+            if (isset($options['fields'])) {
+                $data['userAgent'] = $options['fields'][0];
+                $data['requestUri'] = $options['fields'][1];
+            }
         } else {
             // text message
             // if text is greater than 3000 chars, cut them at 3000 chars.
@@ -80,21 +80,25 @@ class MailAdapter implements AdapterInterface
      * @param $exception
      * @return array
      */
-    private function exceptionMessage(\Exception $exception) {
-
-
-        $errorName = get_class($exception) . " in " . $exception->getFile() . " line: " . $exception->getLine() . "\n";
+    private function exceptionMessage(\Exception $exception)
+    {
+        $className = get_class($exception);
+        if($exception instanceof NotifyException) {
+            $className = "NotifyException";
+        }
+        $errorName = $className;
+        $errorPlace = " in " . $exception->getFile() . " line: " . $exception->getLine() . "\n";
         $errorTitle = $exception->getMessage();
         $trace = $exception->getTraceAsString();
         if (strlen($trace) > 1000) {
-            $trace = substr($exception, 0, 1000);
+            $trace = substr($trace, 0, 1000);
             $trace = $trace . " ... ----- TRACE IS LIMITED TO 1000 CHARS -----";
         }
         $trace = explode("\n", $trace);
         $data = ['errorName' => $errorName,
-        'errorTitle' => $errorTitle,
-        'trace' => $trace];
-
+            'errorPlace' => $errorPlace,
+            'errorTitle' => $errorTitle,
+            'trace' => $trace];
         return $data;
 
     }

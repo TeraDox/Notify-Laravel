@@ -6,8 +6,8 @@ return [
 
     'mail' => [
         'address' => env('MAIL_USERNAME'),
-        'name' => env('MESSAGE_NAME'),
-        'subject' => 'This is Subject!'
+        'name' => 'Mail Test Bot',
+        'subject' => 'Sending a Message From Bot!'
     ],
 
     /*
