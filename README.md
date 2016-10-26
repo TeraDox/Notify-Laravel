@@ -131,6 +131,7 @@ In App\Exceptions\Handler class,
             } catch (NotifyException $ne) {
                 // Problem of mail settings. Dont't use Notify class here to avoid loop.
             }
+                    parent::report($exception);
             
         } 
     }
