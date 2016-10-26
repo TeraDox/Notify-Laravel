@@ -120,21 +120,25 @@ use Notify\Laravel\Exception\NotifyException;
         parent::report($exception);
 
         try {
-            // Use Notify class here.
-            // Send with default settings.
-            \Notify::send($exception);
-
-        } catch(NotifyException $e) {
-            // NotifyException is caught. Default settings have a problem.
-            
             try {
-                // send via mail
-                \Notify::send($e, ['to' => YOUR_EMAIL_ADDRESS, 'from' => 'TestBot', 'subject' => "Test Message"], 'mail');
+                // Use Notify class here.
+                // Send with default settings.
+                \Notify::send($exception);
+
             } catch (NotifyException $ne) {
-                // Problem of mail settings. Dont't use Notify class here to avoid loop.
-                parent::report($ne);
+                try {
+                    // send via mail. (Another way to send a notification if first one failed.)
+                    \Notify::send($ne, ['to' => 'YOUR_EMAIL_ADDRESS', 'from' => 'MailTestBot', 'subject' => "Test Message"], 'mail');
+
+                } catch (NotifyException $ne2) {
+                    // Problem of mail settings. Dont't use Notify class here to avoid loop.
+                    parent::report($ne2);
+                }
             }
-        } 
+        } catch (Exception $e) {
+            // Notify class should throws only NotifyException, but just in case, catch other Exception here to avoid loop.
+            parent::report($e);
+        }
     }
 ```
     
