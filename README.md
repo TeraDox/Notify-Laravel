@@ -113,6 +113,8 @@ $notify->send($exceptionOrText); // send message
 
 In App\Exceptions\Handler class,
 ```
+use Notify\Laravel\Exception\NotifyException;
+
     public function report(Exception $exception)
     {
         parent::report($exception);
@@ -120,14 +122,14 @@ In App\Exceptions\Handler class,
         try {
             // Use Notify class here.
             // Send with default settings.
-            Notify::send($exception);
+            \Notify::send($exception);
 
         } catch(NotifyException $e) {
             // NotifyException is caught. Default settings have a problem.
             
             try {
                 // send via mail
-                Notify::send($e, ['to' => YOUR_EMAIL_ADDRESS, 'from' => 'TestBot', 'subject' => "Test Message"], 'mail');
+                \Notify::send($e, ['to' => YOUR_EMAIL_ADDRESS, 'from' => 'TestBot', 'subject' => "Test Message"], 'mail');
             } catch (NotifyException $ne) {
                 // Problem of mail settings. Dont't use Notify class here to avoid loop.
                 parent::report($ne);
