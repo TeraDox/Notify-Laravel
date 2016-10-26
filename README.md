@@ -122,8 +122,7 @@ use Notify\Laravel\Exception\NotifyException;
         try {
             try {
                 // Use Notify class here.
-                // Send with default settings.
-                \Notify::send($exception);
+                \Notify::send($exception);  // Send with default settings.
 
             } catch (NotifyException $ne) {
                 try {
