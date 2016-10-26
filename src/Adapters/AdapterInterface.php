@@ -12,7 +12,4 @@ interface AdapterInterface
 
     function setFrom($name);
 
-    function status();
-
-    function isOn();
 }

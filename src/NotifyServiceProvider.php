@@ -14,10 +14,10 @@ class NotifyServiceProvider extends ServiceProvider
     {
         $this->publishes([__DIR__ . '/config/config.php' => config_path('notify.php')], 'notify-laravel');
 
-        $this->loadViewsFrom(__DIR__ . '/view', 'notify');
+        $this->loadViewsFrom(__DIR__ . '/view', 'notify-laravel');
 
         $this->publishes([
-            __DIR__ . '/view' => resource_path('views/vendor/notify')], 'notify-laravel');
+            __DIR__ . '/view' => resource_path('views/vendor/notify-laravel')], 'notify-laravel');
     }
 
     /**

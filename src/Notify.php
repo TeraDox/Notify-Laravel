@@ -3,6 +3,8 @@
 namespace Notify\Laravel;
 
 
+use Maknz\Slack\Facades\Slack;
+use Notify\Laravel\Adapters\SlackAdapter;
 use Notify\Laravel\Exception\NotifyException;
 
 
@@ -11,6 +13,7 @@ class Notify
     protected $adapter; // adapter that is going to be used to send message. (e.g. email or slack)
     protected $options; // array of options.
     protected $maxRetry = 2; // number of retries
+    protected $adapterName; // 'slack' or 'mail'
 
 
     /**
@@ -27,17 +30,29 @@ class Notify
         $options['fields'] = $fields;
 
         // set adapter
-        $adapter = $adapter ?: config('notify.default');
+        $adapterName = config('notify.default');
+        $adapter = $adapter ?: $adapterName;
         $this->options = $options;
-        $this->adapter = $this->createAdapter($adapter);
+        $this->adapter = $this->createAdapter($adapter, true);
+        $this->adapterName = $adapterName;
 
     }
 
-    private function createAdapter($name) {
+    private function createAdapter($name, $isDefault =false) {
         $className = "Notify\\Laravel\\Adapters\\" . ucfirst($name) . "Adapter";
-        $adapter = new $className($this->options);
-        $this->adapter = $adapter;
-        return $adapter;
+        if(class_exists($className)){
+            $adapter = new $className($this->options);
+            $this->adapter = $adapter;
+            $this->adapterName = $name;
+            return $adapter;
+        } else {
+            if($isDefault) {
+                $default = "Default ";
+            } else {
+                $default = "";
+            }
+            throw new NotifyException(new \Exception($default . 'Input Adapter Name is in a Wrong Format.'));
+        }
     }
 
     /**
@@ -50,23 +65,14 @@ class Notify
      */
     function send($content, $options = [], $adapter = "")
     {
-        $force = (isset($options['force']) && $options['force'] == 1) ? true : false;
-        if (!$force && !config('notify.active')) {
-            return;
-        }
-
-
         $adapter = $adapter ? $this->createAdapter($adapter) : $this->adapter;
         $this->adapter = $adapter;
-
-        if ($adapter->isOn()) {
-            try {
-                $adapter->send($content, $options);
-            } catch (NotifyException $e) {
-                $maxRetry = $this->maxRetry;
-                $this->retry($adapter, $content, $options, $maxRetry);
-            }
+        $force = (isset($options['force']) && $options['force'] == true) ? true : false;
+        if (!$force && !config('notify.active.' . $this->adapterName)) {
+            return;
         }
+        $this->sendWithRetry($adapter, $content, $options, 0);
+
         return true;
     }
 
@@ -77,31 +83,29 @@ class Notify
     }
 
     /**
-     * Retry sending a content again $maxRetry times unless it correctly sends a content.
+     * Repeatedly sends a content unless it correctly sends a content.
      * @param $adapter
      * @param $content
      * @param $options
-     * @param $maxRetry number of retries.
+     * @param $retryCount current number of retries.
      * @throws NotifyException
      */
-    private function retry($adapter, $content, $options, $maxRetry)
+    private function sendWithRetry($adapter, $content, $options, $retryCount)
     {
-        $retryCount = 0;
-        while ($retryCount < $maxRetry){
-            $retryCount++;
-            sleep(2); // retry per 2 seconds
-
+        if ($retryCount == $this->maxRetry) {
+            // retries are all failed. Throw NotifyException.
+            throw new NotifyException(new \Exception("All Attempts Failed. Max Retry : " . $this->maxRetry)); // return?
+        } else {
             try {
                 $adapter->send($content, $options);
-                break;
-            } catch (NotifyException $e) {
-                if ($retryCount == $maxRetry) {
-                    // retries are all failed. Throw NotifyException.
-                    throw new NotifyException($e);
-                }
+            } catch (\Exception $exception) {
+                $retryCount++;
+                sleep(2); // retry per 2 seconds
+                $this->sendWithRetry($adapter, $content, $options, $retryCount);
             }
         }
     }
+
 
     /**
      * Set new address. Throws NotifyException if address is wrong format.
@@ -121,17 +125,12 @@ class Notify
 
     /**
      * Set new adapter. Current available adapter is 'slack' or 'mail'.
-     * @param $adapter name of adapter.
+     * @param $adapter name of adapter. (e.g.) 'slack' or 'mail'
      * @throws NotifyException
      */
     function setAdapter($adapter)
     {
-        if(preg_match('/^(slack)|(mail)$/i', $adapter)) {
-            $adapter = $this->createAdapter($adapter);
-            $this->adapter = $adapter;
-        } else {
-            throw new NotifyException(new \Exception('Input adapter is in a wrong format.'));
-        }
+        $this->adapter = $this->createAdapter($adapter);
     }
 
 

@@ -119,7 +119,7 @@ class SlackAdapter implements AdapterInterface
      * @param $to
      * @return bool
      */
-    private function isCorrectTo($to)
+    private function isCorrect($to)
     {
         // useraccount start with '@', channel start with '#'
         if(preg_match('/^[\#\@]([a-zA-Z0-9\._-])+$/', $to)) {
@@ -145,10 +145,10 @@ class SlackAdapter implements AdapterInterface
      */
     function setTo($channel)
     {
-        if ($this->isCorrectTo($channel)) {
+        if ($this->isCorrect($channel)) {
             $this->options['channel'] = $channel;
         } else {
-            throw new NotifyException(new \Exception("Input channel is in a wrong format."));
+            throw new NotifyException(new \Exception("Input Channel is in a Wrong Format."));
         }
     }
 
@@ -161,28 +161,4 @@ class SlackAdapter implements AdapterInterface
         $this->options['username'] = $username;
     }
 
-
-    /**
-     * print out current status of this SlackAdapter
-     */
-    function status()
-    {
-        echo "endpoint: " . $this->options['endpoint'] . "\n";
-        echo "channel: " . $this->options['channel'] . "\n";
-        echo "username: " . $this->options['username'] . "\n";
-        echo "icon: " . $this->options['icon'] . "\n";
-    }
-
-    /**
-     * return bool values according to .env file.
-     * @return bool
-     */
-    function isOn()
-    {
-        if(config('notify.env.slack') == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

@@ -63,7 +63,7 @@ class MailAdapter implements AdapterInterface
 
         try {
             // send email
-            Mail::send('vendor.notify.mail', $data, function ($message) use ($options) {
+            Mail::send('vendor.notify-laravel.mail', $data, function ($message) use ($options) {
                 $message->from(env('MAIL_USERNAME'), $options['from'])->to($options['to'])->subject($options['subject']);
             });
         } catch (\Exception $exception) {
@@ -104,7 +104,7 @@ class MailAdapter implements AdapterInterface
      * @param $to
      * @return bool
      */
-    private function isCorrectTo($to)
+    private function isCorrect($to)
     {
         if (preg_match('/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/', $to)) {
             return true;
@@ -121,7 +121,7 @@ class MailAdapter implements AdapterInterface
      */
     function setTo($address)
     {
-        if ($this->isCorrectTo($address)) {
+        if ($this->isCorrect($address)) {
             $this->options['to'] = $address;
         } else {
             throw new NotifyException(new \Exception("Input address is in a wrong format."));
@@ -146,27 +146,4 @@ class MailAdapter implements AdapterInterface
         $this->options['subject'] = $subject;
     }
 
-
-    /**
-     * print out current status of this MailAdapter
-     */
-    function status()
-    {
-        echo "To: " . $this->options['to'] . "\n";
-        echo "From: " . $this->options['from'] . "\n";
-        echo "Subject: " . $this->options['subject'] . "\n";
-    }
-
-    /**
-     * return bool values according to env file.
-     * @return bool
-     */
-    function isOn()
-    {
-        if (config('notify.env.mail') == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
