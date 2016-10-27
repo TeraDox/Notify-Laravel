@@ -45,9 +45,9 @@ php artisan vendor:publish --provider="Maknz\Slack\SlackServiceProviderLaravel5"
 // add --force option to overwrite previously published files.
 ```
 
-These commands should create 
-/config/slack.php,
-/config/notify.php, 
+These commands should create  
+/config/slack.php,  
+/config/notify.php,  
 /resources/views/vendor/notify/mail.blade.php
 
 
@@ -67,9 +67,9 @@ Write values for some config files.
 
 In config\slack.php,
 ```
-'endpoint'= (e.g) http:// //webhook URL for your incoming webhook
-'channel'= // channnel or username where you want to send a message
-'username'= // username that is going to be displayed on the message
+'endpoint'= (e.g) https://hooks.slack.com/services/xxx/yyy/zzz    //webhook URL for your incoming webhook
+'channel'= (e.g.) #general    // channnel or username where you want to send a message
+'username'= (e.g.) Robot    // username that is going to be displayed on the message
 ```
 
 In .env, set suitable values for mail,
@@ -146,11 +146,11 @@ use Notify\Laravel\Exception\NotifyException;
 ```
     
 ##How to Create Other Adapter
-```
-1. Create a class which implements AdapterInterface in an Adapters folder.
-2. Name the class to xxxAdapter. xxx will be an adapter name that is going to be called.
-3. Modify config/config.php file to define default values for the adapter.
-```
+
+1. Create a class which implements AdapterInterface in an Adapters folder.  
+2. Name the class to xxxAdapter. xxx will be an adapter name that is going to be called.  
+3. Modify config/config.php file to define default values for the adapter.  
+
 
 ##Notes
 If an adapter failed to send a message, it will automatically retry to send it. Write ['max_retry' = SOME_NUMBER] in the options array to change the number of attempts (default max_retry = 3). If all attempts failed, it will throw NotifyException. To get more specific info about the error, you should check laravel.log file (The log file captures errors for all attempts).
