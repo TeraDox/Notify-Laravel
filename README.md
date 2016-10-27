@@ -67,7 +67,7 @@ Write values for some config files.
 
 In config\slack.php,
 ```
-'endpoint'= (e.g) 'https://hooks.slack.com/services/xxx/yyy/zzz' //webhook URL for your incoming webhook
+'endpoint'= (e.g.) 'https://hooks.slack.com/services/xxx/yyy/zzz' //webhook URL for your incoming webhook
 'channel'= (e.g.) '#general' // channnel or username where you want to send a message
 'username'= (e.g.) 'Robot' // username that is going to be displayed on the message
 ```
