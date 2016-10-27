@@ -1,6 +1,6 @@
 # Notify-Laravel
 A simple PHP package for sending notifications from laravel via [Slack](https://slack.com) with [incoming webhooks](https://my.slack.com/services/new/incoming-webhook) or via email.
-This package will automatically format an instance of exception object or string text message.
+This package will automatically format an instance of exception object, string text, or an array for a message.
 While sending an exception as a message, it will attach an information of "user agent" and "request uri".
 For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 
@@ -46,9 +46,10 @@ php artisan vendor:publish --provider="Maknz\Slack\SlackServiceProviderLaravel5"
 ```
 
 These commands should create 
+/config/slack.php,
 /config/notify.php, 
-/resources/views/vendor/notify/mail.blade.php,
-/config/slack.php
+/resources/views/vendor/notify/mail.blade.php
+
 
 
 If these publish commands does not work, try 
