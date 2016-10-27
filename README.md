@@ -96,8 +96,8 @@ This class automatically formats and sends an message. The content can be an exc
 * Sending messages from Facade.
 ```
 Notify::send($content); // sends an exception with default setting.
-Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon'] 
-Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject'] 
+Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
+Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject, 'fields', 'max_retry', 'force'] 
 Notify::force($content); // force method forces to send the content regardless of what the active value is.
 
 ```
