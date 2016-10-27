@@ -132,7 +132,7 @@ use Notify\Laravel\Exception\NotifyException;
                 try {
                     // send via mail. (Another way to send a notification if first one failed.)
                     \Notify::send($ne, ['to' => 'YOUR_EMAIL_ADDRESS'], 'mail');
-
+                    parent::report($ne);
                 } catch (NotifyException $ne2) {
                     // Problem of mail settings. Dont't use Notify class here to avoid loop.
                     parent::report($ne2);
