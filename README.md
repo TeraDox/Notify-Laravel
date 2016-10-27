@@ -95,17 +95,17 @@ This class automatically formats and sends an message. The content can be an exc
 
 * Sending messages from Facade.
 ```
-Notify::send($content); // sends an exception with default setting.
-Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
-Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject', 'fields', 'max_retry', 'force'] 
-Notify::force($content); // force method forces to send the content regardless of what the active value is.
+\Notify::send($content); // sends an exception with default setting.
+\Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
+\Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject', 'fields', 'max_retry', 'force'] 
+\Notify::force($content); // force method forces to send the content regardless of what the active value is.
 
 ```
 
 * Sending messages from Instance.
 
 ```
-$notify = new Notify(); // instance of Notify with default setting.
+$notify = new \Notify\Laravel\Notify(); // instance of Notify with default setting.
 $notify->setTo($address); // change address. (channel or userid for slack)
 $notify->setFrom($username); // change username on the message.
 $notify->setAdapter($adapter_name); // set adapter to 'slack' or 'mail'
