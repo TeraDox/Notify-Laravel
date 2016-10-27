@@ -96,7 +96,7 @@ This class automatically formats and sends an message. The content can be an exc
 * Sending messages from Facade.
 ```
 \Notify::send($content); // sends an exception with default setting.
-\Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
+\Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'fields', 'max_retry', 'force']
 \Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject', 'fields', 'max_retry', 'force'] 
 \Notify::force($content); // force method forces to send the content regardless of what the active value is.
 
@@ -112,6 +112,30 @@ $notify->setAdapter($adapter_name); // set adapter to 'slack' or 'mail'
 $notify->send($content); // send message
 // or use $notify->force($content) to force to send.
 ```
+
+## Options for Adapters
+For SlackAdapter,  
+  
+Parameter | Type | Description
+----- | ---- | -----------
+`to` | string | channel or userId that messages is going to be sent to.
+`from` | string | username for the message.
+`icon` | string | The icon URL or stamp string. (e.g.) `:smile:`
+`fields` | array | has UserAgent and RequestUri if there exist.
+`max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
+`force` | bool | force to send if it is true. Otherwise, do not force (follow to active values).
+
+For MailAdapter,  
+  
+Parameter | Type | Description
+----- | ---- | -----------
+`to` | string | email address that messages is going to be sent to.
+`from` | string | username for the email. This does not need to be actual email address.
+`subject` | string | subject for the email.
+`fields` | array | has UserAgent and RequestUri if there exist.
+`max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
+`force` | bool | force to send if it is true. Otherwise, do not force (follow to active values).
+
 
 ## Example of Implementation using Laravel Exception Handler
 
