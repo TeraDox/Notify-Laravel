@@ -66,19 +66,19 @@ Write values for some config files.
 
 In config\slack.php,
 ```
-'endpoint'= //webhook URL for your incoming webhook
-'channel'= //channnel or username where you want to send a message
+'endpoint'= (e.g) http:// //webhook URL for your incoming webhook
+'channel'= // channnel or username where you want to send a message
 'username'= // username that is going to be displayed on the message
 ```
 
 In .env, set suitable values for mail,
 ```
-MAIL_DRIVER=
-MAIL_HOST=
-MAIL_PORT=
-MAIL_USERNAME=
-MAIL_PASSWORD=
-MAIL_ENCRYPTION=
+MAIL_DRIVER= (e.g.) smtp
+MAIL_HOST= (e.g.) smtp.gmail.com
+MAIL_PORT= (e.g.) 465
+MAIL_USERNAME= (e.g.) YOUR_EMAIL_ADDRESS
+MAIL_PASSWORD= (e.g.) YOUR_EMAIL_PASSWORD
+MAIL_ENCRYPTION= (e.g.) ssl
 ```
 
 and add
@@ -90,12 +90,14 @@ If the value = 1, the adapter is turned on (The adapter can send a message). If 
 
 
 ## How to send Messages
+This class automatically formats and sends an message. The content can be an exception object, string, or an array.
+
 * Sending messages from Facade.
 ```
-Notify::send($exception); // sends an exception with default setting.
-Notify::send($text); // sends string with default setting.
-Notify::send($exceptionOrText, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon'] 
-Notify::send($exceptionOrText, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject'] 
+Notify::send($content); // sends an exception with default setting.
+Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon'] 
+Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject'] 
+Notify::force($content); // force method forces to send the content regardless of what the active value is.
 
 ```
 
@@ -105,8 +107,9 @@ Notify::send($exceptionOrText, $options, 'mail'); // keys of options array for M
 $notify = new Notify(); // instance of Notify with default setting.
 $notify->setTo($address); // change address. (channel or userid for slack)
 $notify->setFrom($username); // change username on the message.
-$notify->setAdapter($slackOrMail); // set adapter to slack or mail
-$notify->send($exceptionOrText); // send message
+$notify->setAdapter($adapter_name); // set adapter to 'slack' or 'mail'
+$notify->send($content); // send message
+// or use $notify->force($content) to force to send.
 ```
 
 ## Example of Implementation using Laravel Exception Handler
@@ -127,7 +130,7 @@ use Notify\Laravel\Exception\NotifyException;
             } catch (NotifyException $ne) {
                 try {
                     // send via mail. (Another way to send a notification if first one failed.)
-                    \Notify::send($ne, ['to' => 'YOUR_EMAIL_ADDRESS', 'from' => 'MailTestBot', 'subject' => "Test Message"], 'mail');
+                    \Notify::send($ne, ['to' => 'YOUR_EMAIL_ADDRESS'], 'mail');
 
                 } catch (NotifyException $ne2) {
                     // Problem of mail settings. Dont't use Notify class here to avoid loop.
@@ -135,9 +138,18 @@ use Notify\Laravel\Exception\NotifyException;
                 }
             }
         } catch (Exception $e) {
-            // Notify class should throws only NotifyException, but just in case, catch other Exception here to avoid loop.
+            // Notify class should throw only NotifyException, but just in case, catch other Exception here to avoid loop.
             parent::report($e);
         }
     }
 ```
     
+##How to Create Other Adapter
+```
+1. Create a class which implements AdapterInterface in an Adapters folder.
+2. Name the class to xxxAdapter. xxx will be an adapter name that is going to be called.
+3. Modify config/config.php file to define default values for the adapter.
+```
+
+##Notes
+If an adapter failed to send a message, it will automatically retry to send it. Write ['max_retry' = SOME_NUMBER] in the options array to change the number of attempts (default max_retry = 3). If all attempts failed, it will throw NotifyException. To get more specific info about the error, you should check laravel.log file (The log file captures errors for all attempts).
