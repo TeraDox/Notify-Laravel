@@ -18,9 +18,7 @@ class MailAdapter implements AdapterInterface
      */
     function __construct($options)
     {
-        if($this->isCorrect(config('notify.mail.address'))){
-            $options['to'] = config('notify.mail.address');
-        }
+        $options['to'] = config('notify.mail.address');
         $options['from'] = config('notify.mail.name');
         $options['subject'] = config('notify.mail.subject');
         $this->options = $options;
@@ -30,19 +28,18 @@ class MailAdapter implements AdapterInterface
     /**
      * Send content with specified options via email.
      * If there is no options specified, use one that is already specified. (at least default)
-     * @param $content
-     * @param $options
+     * @param $content content that is going to be sent
+     * @param $options array of options. keys = ['from', 'to', 'subject, 'fields', 'max_retry', 'force']
      * @throws NotifyException
      */
     function send($content, $options)
     {
-        if(isset($options['to'])){
-            $this->setTo($options['to']);
-        }
-
         if (!$options) {
             $options = $this->options;
         } else {
+            if (isset($options['to'])) {
+                $this->setTo($options['to']);
+            }
             foreach ($this->options as $key => $value) {
                 if (!key_exists($key, $options)) {
                     $options[$key] = $this->options[$key];
@@ -66,6 +63,7 @@ class MailAdapter implements AdapterInterface
             $content = explode("\n", $content);
             $data['text'] = $content;
         }
+
 
         try {
             // send email
@@ -111,7 +109,7 @@ class MailAdapter implements AdapterInterface
 
     /**
      * Returns true if $to is in a correct format, false if it is not.
-     * @param $to
+     * @param $to email address where the message is going to be sent
      * @return bool
      */
     private function isCorrect($to)
@@ -127,7 +125,7 @@ class MailAdapter implements AdapterInterface
 
     /**
      * Set new address
-     * @param $address
+     * @param $address address where the message is going to be sent
      * @throws NotifyException
      */
     function setTo($address)
@@ -141,7 +139,7 @@ class MailAdapter implements AdapterInterface
 
     /**
      * Set new name
-     * @param $name
+     * @param $name name that is going to be displayed in the message
      */
     function setFrom($name)
     {
@@ -150,7 +148,7 @@ class MailAdapter implements AdapterInterface
 
     /**
      * Set new subject
-     * @param $subject
+     * @param $subject subject for the email
      */
     function setSubject($subject)
     {

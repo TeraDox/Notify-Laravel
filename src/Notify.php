@@ -3,6 +3,7 @@
 namespace Notify\Laravel;
 
 
+use Illuminate\Contracts\Logging\Log;
 use Maknz\Slack\Facades\Slack;
 use Notify\Laravel\Adapters\SlackAdapter;
 use Notify\Laravel\Exception\NotifyException;
@@ -78,8 +79,8 @@ class Notify
 
     /**
      * Send content to an adapter with options. Automatically converts array to string.
-     * For SlackAdapter, keys of options = ['from', 'to', 'icon', 'endpoint', 'fields']
-     * For MailAdapter, keys of options = ['from', 'to', 'subject, 'fields']
+     * For SlackAdapter, keys of options = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
+     * For MailAdapter, keys of options = ['from', 'to', 'subject, 'fields', 'max_retry', 'force']
      * @param mixed $content content that is going to be sent
      * @param array $options options for adapter
      * @param string $adapter name of adapter that is going to be used to sent a content
@@ -87,13 +88,13 @@ class Notify
      */
     public function send($content, $options = [], $adapter = "")
     {
+
         $adapter = $adapter ? $this->createAdapter($adapter) : $this->adapter;
         $this->adapter = $adapter;
         $force = (isset($options['force']) && $options['force'] == true) ? true : false;
         if (!$force && !config('notify.active.' . $this->adapterName)) {
             return false;
         }
-
         if (is_array($content)) {
            $content = print_r($content, true);
         }
@@ -109,11 +110,11 @@ class Notify
 
 
     /**
-     * Repeatedly sends a content unless it correctly sends a content.
-     * @param $adapter
-     * @param $content
-     * @param $options
-     * @param int $maxRetryCount
+     * Repeatedly sends a content unless it correctly sends a content. 1 retry per 2 seconds.
+     * @param mixed $content content that is going to be sent
+     * @param array $options options for the adapter
+     * @param object $adapter instance of adapter class
+     * @param int $maxRetryCount maximum number of retries
      * @param int $retryCount current number of retries.
      * @throws NotifyException
      */
@@ -121,14 +122,15 @@ class Notify
     {
         if ($retryCount == $maxRetryCount) {
             // retries are all failed. Throw NotifyException.
-            throw new NotifyException(new \Exception("All Attempts Failed in " . get_class($adapter) . ". Max Retry Count : " . $maxRetryCount)); // return?
+            throw new NotifyException(new \Exception("All Attempts Failed in " . get_class($adapter) . ". Check laravel.log file for more info. Max Retry Count : " . $maxRetryCount)); // return?
         } else {
             try {
                 $adapter->send($content, $options);
             } catch (\Exception $exception) {
                 $retryCount++;
-//                sleep(2); // retry per 2 seconds
+                sleep(2); // retry per 2 seconds
 
+                \Log::error($exception);
                 $this->sendWithRetry($content, $options, $adapter, $maxRetryCount, $retryCount);
 
             }
@@ -137,7 +139,7 @@ class Notify
 
 
     /**
-     * Set new address. Throws NotifyException if address is wrong format.
+     * Set new address.
      * @param $address
      */
     public function setTo($address) {
@@ -155,7 +157,6 @@ class Notify
     /**
      * Set new adapter. Current available adapter is 'slack' or 'mail'.
      * @param $adapter name of adapter. (e.g.) 'slack' or 'mail'
-     * @throws NotifyException
      */
     public function setAdapter($adapter)
     {
