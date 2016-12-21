@@ -84,10 +84,10 @@ MAIL_ENCRYPTION= (e.g.) ssl
 
 and add
 ```
-MESSAGE_NOTIFY_SLACK=1
-MESSAGE_NOTIFY_MAIL=1
+MESSAGE_NOTIFY_SLACK=true
+MESSAGE_NOTIFY_MAIL=true
 ```
-If the value = 1, the adapter is turned on (The adapter can send a message). If the value = 0, the adapter is turned off (The adapter cannot send a message). If there is no value defined in .env file, 0 is used as default.
+If the value = true, the adapter is turned on (The adapter can send a message). If the value = false, the adapter is turned off (The adapter cannot send a message). If there is no value defined in .env file, false is used as default.
 
 
 ## How to send Messages
