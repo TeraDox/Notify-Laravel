@@ -26,7 +26,8 @@ class Notify
         // get info from server
         $serverInfo = request()->capture()->server;
         $userAgent = $serverInfo->get("HTTP_USER_AGENT");
-        $requestUri = $serverInfo->get("REQUEST_URI");
+        $requestUri = $serverInfo->get("SERVER_NAME") . $serverInfo->get("REQUEST_URI");
+
         if (isset($userAgent) && isset($requestUri)) {
             $fields = [$userAgent, $requestUri];
             $options['fields'] = $fields;
@@ -42,7 +43,7 @@ class Notify
 
     /**
      * Creates and returns an adapter of given name.
-     * @param $name
+     * @param string $name
      * @param bool $isDefault true if it creates an adapter with default settings
      * @return mixed
      * @throws NotifyException
@@ -66,7 +67,7 @@ class Notify
 
     /**
      * force to send content regardless of what the active value (in config/notify.php) is.
-     * @param $content
+     * @param mixed $content
      * @param array $options
      * @param string $adapter
      * @return bool
@@ -79,7 +80,7 @@ class Notify
 
     /**
      * Send content to an adapter with options. Automatically converts array to string.
-     * For SlackAdapter, keys of options = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
+     * For SlackAdapter, keys of options = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force', 'mention']
      * For MailAdapter, keys of options = ['from', 'to', 'subject, 'fields', 'max_retry', 'force']
      * @param mixed $content content that is going to be sent
      * @param array $options options for adapter
@@ -140,7 +141,7 @@ class Notify
 
     /**
      * Set new address.
-     * @param $address
+     * @param string $address
      */
     public function setTo($address) {
         $this->adapter->setTo($address);
@@ -148,7 +149,7 @@ class Notify
 
     /**
      * Set new name that is going to be displayed in the message.
-     * @param $name
+     * @param string $name
      */
     public function setFrom($name) {
         $this->adapter->setFrom($name);
@@ -156,7 +157,7 @@ class Notify
 
     /**
      * Set new adapter. Current available adapter is 'slack' or 'mail'.
-     * @param $adapter name of adapter. (e.g.) 'slack' or 'mail'
+     * @param string $adapter name of adapter. (e.g.) 'slack' or 'mail'
      */
     public function setAdapter($adapter)
     {
