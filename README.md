@@ -100,7 +100,7 @@ This class automatically formats and sends an message. The content can be an exc
 \Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'fields', 'max_retry', 'force']
 \Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject', 'fields', 'max_retry', 'force'] 
 \Notify::force($content); // force method forces to send the content regardless of what the active value is.
-\Notify::send($content, ['mention' => '@here'); // sends an exception with mention.
+\Notify::send($content, ['mention' => '@here']); // sends an exception with mention.
 
 ```
 
@@ -126,7 +126,7 @@ Parameter | Type | Description
 `fields` | array | has UserAgent and RequestUri if there exist.
 `max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
 `force` | bool | forces to send if it is true. Otherwise, do not force (follows to config/active values).
-`mention` | string | mention is attached at the beginning of the content.
+`mention` | string | mention is attached at the beginning of the content. (e.g.) '@channel'
 
 For MailAdapter,  
   
