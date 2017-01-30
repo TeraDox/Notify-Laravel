@@ -148,6 +148,10 @@ use Notify\Laravel\Exception\NotifyException;
 
     public function report(Exception $exception)
     {
+        if ($this->shouldntReport($e)) {
+            return;
+        }
+        
         parent::report($exception);
 
         try {
