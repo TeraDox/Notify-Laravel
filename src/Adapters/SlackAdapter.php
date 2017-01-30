@@ -10,12 +10,12 @@ use Maknz\Slack\Facades\Slack;
 
 class SlackAdapter implements AdapterInterface
 {
-    protected $options; // array of options. keys = ['from', 'to', 'icon', 'endpoint', 'fields']
+    protected $options; // array of options. keys = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force', 'mention' ]
 
     /**
      * SlackAdapter constructor.
      * Initialize values from config file.
-     * @param $options
+     * @param array $options
      */
     function __construct($options)
     {
@@ -29,8 +29,8 @@ class SlackAdapter implements AdapterInterface
     /**
      * Send content with specified options via slack.
      * If there is no options specified, use one that is already specified. (at least default)
-     * @param $content content that is going to be sent
-     * @param $options array of options. keys = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force']
+     * @param mixed $content content that is going to be sent
+     * @param array $options array of options. keys = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force', 'mention']
      * @throws NotifyException
      */
     function send($content, $options)
@@ -47,7 +47,7 @@ class SlackAdapter implements AdapterInterface
                 }
             }
         }
-
+        $mention = '';
         $message = Slack::createMessage();
         $icon = $options['icon'];
         if($icon != null){
@@ -63,7 +63,10 @@ class SlackAdapter implements AdapterInterface
                     [new AttachmentField(['title' => 'HTTP_USER_AGENT', 'value' => $options['fields'][0]]),
                         new AttachmentField(['title' => 'REQUEST_URI', 'value' => $options['fields'][1]])];
             }
-            $message = $this->exceptionMessage($message, $fields, $content);
+            if (isset($options['mention'])) {
+                $mention = $options['mention'] . "\n";
+            }
+            $message = $this->exceptionMessage($message, $fields, $content, $mention);
 
         } else {
             // text message
@@ -71,7 +74,10 @@ class SlackAdapter implements AdapterInterface
                 $content = substr($content, 0, 3000);
                 $content = $content . " ... ----- TEXT IS LIMITED TO 3000 CHARS-----";
             }
-            $message->setText("```" . $content . "```");
+            if (isset($options['mention'])) {
+                $mention = $options['mention'] . " ";
+            }
+            $message->setText($mention . "```" . $content . "```");
         }
 
         $message->from($options['from']);
@@ -91,19 +97,21 @@ class SlackAdapter implements AdapterInterface
 
     /**
      * Handles an exception object and returns as a message array.
-     * @param $message
-     * @param $fields
+     * @param \Maknz\Slack\Message $message
+     * @param array $fields
      * @param \Exception $exception
+     * @param string $mention
      * @return mixed
      */
-    private function exceptionMessage($message, $fields, \Exception $exception)
+    private function exceptionMessage($message, $fields, \Exception $exception, $mention)
     {
         $className = get_class($exception);
         if ($exception instanceof NotifyException) {
             $className = "NotifyException";
         }
 
-        $message->setText("*" . $className. "* in `" . $exception->getFile() . "` line: " . $exception->getLine());
+
+        $message->setText($mention . "*" . $className. "* in `" . $exception->getFile() . "` line: " . $exception->getLine());
 
         $trace = $exception->getTraceAsString();
         if(strlen($trace) > 1000) {
@@ -126,7 +134,7 @@ class SlackAdapter implements AdapterInterface
 
     /**
      * Returns true if $to is in a correct format, false if it is not.
-     * @param $to channel or userId. channel start with '#', userId start with '@'.
+     * @param string $to channel or userId. channel start with '#', userId start with '@'.
      * @return bool
      */
     private function isCorrect($to)
@@ -141,7 +149,7 @@ class SlackAdapter implements AdapterInterface
 
     /**
      * set new Icon(or stamp)
-     * @param $url url or stamp string (e.g. :smile:) of an icon.
+     * @param string $url url or stamp string (e.g. :smile:) of an icon.
      */
     function setIcon($url)
     {
@@ -150,7 +158,7 @@ class SlackAdapter implements AdapterInterface
 
     /**
      * set new channel(or user)
-     * @param $channel channel or userId where the message is going to be sent.
+     * @param string $channel channel or userId where the message is going to be sent.
      * @throws NotifyException
      */
     function setTo($channel)
@@ -164,7 +172,7 @@ class SlackAdapter implements AdapterInterface
 
     /**
      * set new username
-     * @param $username name that is going to be displayed in the message.
+     * @param string $username name that is going to be displayed in the message.
      */
     function setFrom($username)
     {

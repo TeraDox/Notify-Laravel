@@ -7,7 +7,7 @@ For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 ## Requirements
 
 * PHP >=5.6.4
-* laravel/framework 5.3.
+* laravel/framework 5.3.*
 * maknz/slack ^1.7
 
 ## Installation
@@ -68,8 +68,9 @@ Write values for some config files.
 In config\slack.php,
 ```
 'endpoint'= (e.g.) 'https://hooks.slack.com/services/xxx/yyy/zzz' //webhook URL for your incoming webhook
-'channel'= (e.g.) '#general' // channnel or username where you want to send a message
-'username'= (e.g.) 'Robot' // username that is going to be displayed on the message
+'channel'= (e.g.) '#general' // channnel or username where you want to send a message. null for default
+'username'= (e.g.) 'Robot' // username that is going to be displayed on the message. null for default
+'link_names' = (e.g.) true // needs to be true to send with mention <- NEW
 ```
 
 In .env, set suitable values for mail,
@@ -99,6 +100,7 @@ This class automatically formats and sends an message. The content can be an exc
 \Notify::send($content, $options, 'slack'); // keys of options array for Slack =['from', 'to', 'icon', 'fields', 'max_retry', 'force']
 \Notify::send($content, $options, 'mail'); // keys of options array for Mail =['from', 'to', 'subject', 'fields', 'max_retry', 'force'] 
 \Notify::force($content); // force method forces to send the content regardless of what the active value is.
+\Notify::send($content, ['mention' => '@here'); // sends an exception with mention.
 
 ```
 
@@ -123,7 +125,8 @@ Parameter | Type | Description
 `icon` | string | The icon URL or stamp string. (e.g.) `:smile:`
 `fields` | array | has UserAgent and RequestUri if there exist.
 `max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
-`force` | bool | force to send if it is true. Otherwise, do not force (follow to active values).
+`force` | bool | forces to send if it is true. Otherwise, do not force (follows to config/active values).
+`mention` | string | mention is attached at the beginning of the content.
 
 For MailAdapter,  
   
