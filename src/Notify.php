@@ -26,7 +26,8 @@ class Notify
         // get info from server
         $serverInfo = request()->capture()->server;
         $userAgent = $serverInfo->get("HTTP_USER_AGENT");
-        $requestUri = $serverInfo->get("SERVER_NAME") . $serverInfo->get("REQUEST_URI");
+        $scheme = (request()->getScheme()) ? request()->getScheme() . '://' : '';
+        $requestUri = $scheme . $serverInfo->get("SERVER_NAME") . $serverInfo->get("REQUEST_URI");
 
         if (isset($userAgent) && isset($requestUri)) {
             $fields = [$userAgent, $requestUri];
