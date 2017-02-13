@@ -7,7 +7,7 @@ For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 ## Requirements
 
 * PHP >=5.6.4
-* laravel/framework 5.3.*
+* laravel/framework ^5.4.*
 * maknz/slack ^1.7
 
 ## Installation
@@ -85,11 +85,12 @@ MAIL_ENCRYPTION= (e.g.) ssl
 
 and add
 ```
-MESSAGE_NOTIFY_SLACK=true
-MESSAGE_NOTIFY_MAIL=true
+NOTIFY_SLACK=(e.g.) true
+NOTIFY_MAIL=(e.g.) true
+NOTIFY_SLACK_MENTION=(e.g.) @here
 ```
 If the value = true, the adapter is turned on (The adapter can send a message). If the value = false, the adapter is turned off (The adapter cannot send a message). If there is no value defined in .env file, false is used as default.
-
+Mention will be attached at the beginning of the content.
 
 ## How to send Messages
 This class automatically formats and sends an message. The content can be an exception object, string, or an array.
@@ -151,7 +152,7 @@ use Notify\Laravel\Exception\NotifyException;
         if ($this->shouldntReport($e)) {
             return;
         }
-        
+
         parent::report($exception);
 
         try {
