@@ -127,7 +127,7 @@ Parameter | Type | Description
 `fields` | array | has UserAgent and RequestUri if there exist.
 `max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
 `force` | bool | forces to send if it is true. Otherwise, do not force (follows to config/active values).
-`mention` | string | mention is attached at the beginning of the content.
+`mention` | string | mention is attached at the beginning of the content. (e.g.) '@channel'
 
 For MailAdapter,  
   
@@ -152,7 +152,7 @@ use Notify\Laravel\Exception\NotifyException;
         if ($this->shouldntReport($e)) {
             return;
         }
-            
+
         parent::report($exception);
 
         try {
