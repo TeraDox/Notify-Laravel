@@ -17,12 +17,12 @@ return [
     ],
 
     /**
-     * Active value. we use the adapter if it is 1, we don't if it is 0.
-     * default value is 0 (An adapter is turned off if it is not specified in .env file).
+     * Active value. we use the adapter if it is true, we don't if it is false.
+     * default value is false (An adapter is turned off if it is not specified in .env file).
      */
     'active' => [
-        'slack' => env('NOTIFY_SLACK', '0'),
-        'mail' => env('NOTIFY_EMAIL', '0')
+        'slack' => env('NOTIFY_SLACK', false),
+        'mail' => env('NOTIFY_EMAIL', false)
     ],
 
     /**
