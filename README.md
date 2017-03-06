@@ -7,7 +7,7 @@ For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 ## Requirements
 
 * PHP >=5.6.4
-* laravel/framework ^5.4.*
+* laravel/framework >=5.3
 * maknz/slack ^1.7
 
 ## Installation
@@ -23,7 +23,7 @@ composer require tdx/notify-laravel
 *2. Add 'provider' and 'alias' for config\app.php.
 ```
 'providers' => [ ...
-        Maknz\Slack\SlackServiceProvider::class,
+        Notify\Laravel\SlackServiceProvider::class,
         Notify\Laravel\NotifyServiceProvider::class,
         ...],
         
@@ -32,6 +32,8 @@ composer require tdx/notify-laravel
         'Notify' => Notify\Laravel\Facades\Notify::class,
         ...],
 ```
+I temporary created Customized SlackServiceProvider for maknz/slack package since they don't have time to maintain the package. 
+(Reference: https://github.com/maknz/slack/issues/82)
 
 *3. Publish necessary config and view files.
 ```
