@@ -111,7 +111,7 @@ This class automatically formats and sends an message. The content can be an exc
 
 ```
 $notify = new \Notify\Laravel\Notify(); // instance of Notify with default setting.
-$notify->setTo($address); // change address. (channel or userid for slack)
+$notify->setTo($address); // change address. (channel or username for slack)
 $notify->setFrom($username); // change username on the message.
 $notify->setAdapter($adapter_name); // set adapter to 'slack' or 'mail'
 $notify->send($content); // send message
@@ -123,7 +123,7 @@ For SlackAdapter,
   
 Parameter | Type | Description
 ----- | ---- | -----------
-`to` | string | channel or userId that messages is going to be sent to.
+`to` | string | channel or username that messages is going to be sent to.
 `from` | string | username for the message.
 `icon` | string | The icon URL or stamp string. (e.g.) `:smile:`
 `fields` | array | has UserAgent and RequestUri if there exist.
