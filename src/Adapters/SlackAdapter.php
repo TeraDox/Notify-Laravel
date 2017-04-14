@@ -77,7 +77,10 @@ class SlackAdapter implements AdapterInterface
             if (isset($options['mention'])) {
                 $mention = $options['mention'] . " ";
             }
-            $message->setText($mention . "```" . $content . "```");
+
+            $content = (isset($options['raw']) && $options['raw']) ? $content : "```" . $content . "```";
+
+            $message->setText($mention . $content);
         }
 
         $message->from($options['from']);

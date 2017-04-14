@@ -28,8 +28,8 @@ class MailAdapter implements AdapterInterface
     /**
      * Send content with specified options via email.
      * If there is no options specified, use one that is already specified. (at least default)
-     * @param $content content that is going to be sent
-     * @param $options array of options. keys = ['from', 'to', 'subject, 'fields', 'max_retry', 'force']
+     * @param mixed $content content that is going to be sent
+     * @param array $options array of options. keys = ['from', 'to', 'subject, 'fields', 'max_retry', 'force']
      * @throws NotifyException
      */
     function send($content, $options)
@@ -55,7 +55,7 @@ class MailAdapter implements AdapterInterface
             }
         } else {
             // text message
-            // if text is greater than 3000 chars, cut them at 3000 chars.
+            // if text is greater than 3500 chars, cut them at 3500 chars.
             if (strlen($content) > 3500) {
                 $content = substr($content, 0, 3500);
                 $content = $content . " ... ----- TEXT IS LIMITED TO 3500 CHARS-----";
