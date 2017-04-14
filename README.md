@@ -130,6 +130,7 @@ Parameter | Type | Description
 `max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
 `force` | bool | forces to send if it is true. Otherwise, do not force (follows to config/active values).
 `mention` | string | mention is attached at the beginning of the content. (e.g.) '@channel'
+`raw` | bool | send text without formatting if it is true.
 
 For MailAdapter,  
   
