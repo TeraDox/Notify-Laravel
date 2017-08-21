@@ -22,7 +22,9 @@ class SlackServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(config_path('slack.php'), 'slack');
+    	if ( file_exists(config_path('slack.php'))) {
+		    $this->mergeConfigFrom( config_path( 'slack.php' ), 'slack' );
+	    }
 
         $this->app->singleton('maknz.slack', function($app)
         {
