@@ -20,7 +20,7 @@
                 "Notify\\Laravel\\SlackServiceProvider"
             ],
             "aliases": {
-                "Notify": "Notify\\Laravel\\Facades\\Notify"
+                "Notify": "Notify\\Laravel\\Facades\\Notify",
                 "Slack": "Maknz\\Slack\\Facades\\Slack"
             }
         }
