@@ -12,5 +12,16 @@
         "psr-4": {
             "Notify\\Laravel\\" : "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Notify\\Laravel\\NotifyServiceProvider",
+                "Notify\\Laravel\\SlackServiceProvider"
+            ],
+            "aliases": {
+                "Notify": "Notify\\Laravel\\Facades\\Notify"
+            }
+        }
     }
 }
