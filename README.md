@@ -180,12 +180,12 @@ use Notify\Laravel\Exception\NotifyException;
     }
 ```
     
-##How to Create Other Adapter
+## How to Create Other Adapter
 
 1. Create a class which implements AdapterInterface in an Adapters folder.  
 2. Name the class to xxxAdapter. xxx will be an adapter name that is going to be called.  
 3. Modify config/config.php file to define default values for the adapter.  
 
 
-##Notes
+## Notes
 If an adapter failed to send a message, it will automatically retry to send it. Write ['max_retry' = SOME_NUMBER] in the options array to change the number of attempts (default max_retry = 3). If all attempts failed, it will throw NotifyException. To get more specific info about the error, you should check laravel.log file (The log file captures errors for all attempts).
