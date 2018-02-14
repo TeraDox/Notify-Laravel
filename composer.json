@@ -7,7 +7,7 @@
         "laravel/framework": ">=5.3",
         "maknz/slack": "^1.7"
     },
-    "license": "BSD",
+    "license": "BSD-2-Clause",
     "autoload": {
         "psr-4": {
             "Notify\\Laravel\\" : "src/"
