@@ -1,8 +1,13 @@
 # Notify-Laravel
 A simple PHP package for sending notifications from laravel via [Slack](https://slack.com) with [incoming webhooks](https://my.slack.com/services/new/incoming-webhook) or via email.
 This package will automatically format an instance of exception object, string text, or an array for a message.
-While sending an exception as a message, it will attach an information of "user agent" and "request uri".
+While sending an exception as a message, it will attach an information of "user agent", "request uri", and "ip address.
 For Laravel, using this class in a Exceptions\Handler.php class is prefered.
+
+
+**Attention:  maknz/slack is not going to be maintained.** (Reference: https://github.com/maknz/slack/issues/82)  
+I temporary created customized SlackServiceProvider for maknz/slack to adapt above Laravel 5.4. I may change the package in the feature.
+
 
 ## Requirements
 
@@ -11,16 +16,13 @@ For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 * maknz/slack ^1.7
 
 ## Installation
-
-There are 4 steps to use this package.
-
-*1. Use composer to install this package.
+### 1. Use composer to install this package.
 
 ```
 composer require tdx/notify-laravel
 ```
 
-*2. Add 'provider' and 'alias' for config\app.php.
+### 2. Add 'provider' and 'alias' for config\app.php. (No need above Laravel 5.5. Thanks to Auto-Discovery feature! YaY)
 ```
 'providers' => [ ...
         Notify\Laravel\SlackServiceProvider::class,
@@ -32,26 +34,22 @@ composer require tdx/notify-laravel
         'Notify' => Notify\Laravel\Facades\Notify::class,
         ...],
 ```
-I temporary created Customized SlackServiceProvider for maknz/slack package since they don't have time to maintain the package. 
+I temporary created Customized `SlackServiceProvider` for maknz/slack package since they don't have time to maintain the package. 
 (Reference: https://github.com/maknz/slack/issues/82)
 
-*3. Publish necessary config and view files.
-```
-php artisan vendor:publish
-```
-OR, 
-If you want to publish only related files for this package,
+### 3. Publish necessary config and view files.
 ```
 php artisan vendor:publish --tag='notify-laravel'
 php artisan vendor:publish --provider="Maknz\Slack\SlackServiceProviderLaravel5"
-// add --force option to overwrite previously published files.
 ```
+add `--force` option to overwrite previously published files.
 
 These commands should create  
+```
 /config/slack.php,  
 /config/notify.php,  
 /resources/views/vendor/notify/mail.blade.php
-
+```
 
 
 If these publish commands does not work, try 
@@ -61,13 +59,13 @@ php artisan config:clear
 It will clear the config cache.
 
 
-*4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account. You need to write Webhook URL in config\slack.php file to send a message via Slack. 
+### 4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account. You need to write Webhook URL in config\slack.php file to send a message via Slack.
 
 
 ## Settings
 Write values for some config files.
 
-In config\slack.php,
+### In config\slack.php,
 ```
 'endpoint'= (e.g.) 'https://hooks.slack.com/services/xxx/yyy/zzz' //webhook URL for your incoming webhook
 'channel'= (e.g.) '#general' // channnel or username where you want to send a message. null for default
@@ -75,7 +73,7 @@ In config\slack.php,
 'link_names' = (e.g.) true // needs to be true to send with mention <- NEW
 ```
 
-In .env, set suitable values for mail,
+### In .env, set suitable values for mail,
 ```
 MAIL_DRIVER= (e.g.) smtp
 MAIL_HOST= (e.g.) smtp.gmail.com
