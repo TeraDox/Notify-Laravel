@@ -29,6 +29,9 @@
     @if (isset($requestUri))
     <p><b>REQUEST_URI :</b> {{ $requestUri}}</p>
     @endif
+    @if (isset($ipAddress))
+      <p><b>IP_ADDRESS :</b> {{ $ipAddress}}</p>
+    @endif
   </div>
 </body>
 </html>

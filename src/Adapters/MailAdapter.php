@@ -70,7 +70,7 @@ class MailAdapter implements AdapterInterface
         try {
             // send email
             Mail::send('vendor.notify-laravel.mail', $data, function ($message) use ($options) {
-                $message->from(env('MAIL_USERNAME'), $options['from'])->to($options['to'])->subject($options['subject']);
+                $message->from(config('mail.username'), $options['from'])->to($options['to'])->subject($options['subject']);
             });
         } catch (\Exception $exception) {
             throw new NotifyException($exception);
