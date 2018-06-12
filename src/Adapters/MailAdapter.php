@@ -52,6 +52,8 @@ class MailAdapter implements AdapterInterface
             if (isset($options['fields'])) {
                 $data['userAgent'] = $options['fields'][0];
                 $data['requestUri'] = $options['fields'][1];
+                $data['ipAddress'] = $options['fields'][2];
+
             }
         } else {
             // text message

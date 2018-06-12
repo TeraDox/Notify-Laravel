@@ -28,9 +28,9 @@ class Notify
         $userAgent = $serverInfo->get("HTTP_USER_AGENT");
         $scheme = (request()->getScheme()) ? request()->getScheme() . '://' : '';
         $requestUri = $scheme . $serverInfo->get("SERVER_NAME") . $serverInfo->get("REQUEST_URI");
-
-        if (isset($userAgent) && isset($requestUri)) {
-            $fields = [$userAgent, $requestUri];
+        $ip = request()->ip();
+        if (isset($userAgent) && isset($requestUri) && isset($ip)) {
+            $fields = [$userAgent, $requestUri, $ip];
             $options['fields'] = $fields;
         }
         // set adapter

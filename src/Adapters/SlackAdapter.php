@@ -60,8 +60,11 @@ class SlackAdapter implements AdapterInterface
             $fields = [];
             if (isset($options['fields'])) {
                 $fields =
-                    [new AttachmentField(['title' => 'HTTP_USER_AGENT', 'value' => $options['fields'][0]]),
-                        new AttachmentField(['title' => 'REQUEST_URI', 'value' => $options['fields'][1]])];
+                    [
+                        new AttachmentField(['title' => 'HTTP_USER_AGENT', 'value' => $options['fields'][0]]),
+                        new AttachmentField(['title' => 'REQUEST_URI', 'value' => $options['fields'][1]]),
+                        new AttachmentField(['title' => 'IP_ADDRESS', 'value' => $options['fields'][2]])
+                    ];
             }
             if (isset($options['mention'])) {
                 $mention = $options['mention'] . "\n";
