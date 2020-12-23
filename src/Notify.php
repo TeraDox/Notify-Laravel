@@ -27,7 +27,7 @@ class Notify
         $serverInfo = request()->capture()->server;
         $userAgent = $serverInfo->get("HTTP_USER_AGENT");
         $scheme = (request()->getScheme()) ? request()->getScheme() . '://' : '';
-        $requestUri = $scheme . $serverInfo->get("SERVER_NAME") . $serverInfo->get("REQUEST_URI");
+        $requestUri = $scheme . $serverInfo->get("HTTP_HOST") . $serverInfo->get("REQUEST_URI");
         $ip = request()->ip();
         if (isset($userAgent) && isset($requestUri) && isset($ip)) {
             $fields = [$userAgent, $requestUri, $ip];
