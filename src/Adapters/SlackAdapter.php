@@ -3,10 +3,16 @@
 namespace Notify\Laravel\Adapters;
 
 use Notify\Laravel\Exception\NotifyException;
+use Notify\Laravel\Notifications\SlackErrorNotification;
+use Notify\Laravel\Notifications\SlackTextNotification;
 
 class SlackAdapter implements AdapterInterface
 {
-    protected $options; // array of options. keys = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force', 'mention' ]
+    /**
+     * keys = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force', 'mention' ]
+     * @var array $options
+     */
+    protected $options;
 
     /**
      * SlackAdapter constructor.
@@ -47,10 +53,10 @@ class SlackAdapter implements AdapterInterface
 
         if ($content instanceof \Exception) {
             // exception
-            $notification = new \Notify\Laravel\Notifications\SlackErrorNotification($content, $options);
+            $notification = new SlackErrorNotification($content, $options);
         } else {
             // text message
-            $notification = new \Notify\Laravel\Notifications\SlackTextNotification($content, $options);
+            $notification = new SlackTextNotification($content, $options);
         }
 
         try {
