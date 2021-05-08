@@ -42,12 +42,11 @@ class SlackTextNotification extends Notification
             $content = substr($content, 0, 3000);
             $content = $content . " ... ----- TEXT IS LIMITED TO 3000 CHARS-----";
         }
-        if (isset($this->options['mention'])) {
-            $mention = $this->options['mention'] . " ";
-        }
 
         $content = (isset($this->options['raw']) && $this->options['raw']) ? $content : "```" . $content . "```";
-        $content = $mention . $content;
+        if (isset($this->options['mention'])) {
+            $content = $this->options['mention'] . " " . $content;
+        }
 
         $slackMessage = (new SlackMessage)->linkNames()->content($content);
         if ($this->options['icon']) {
