@@ -3,11 +3,10 @@
     "description": "send notifications from laravel",
     "type": "library",
     "require": {
-        "php": ">=5.6.4",
+        "php": ">=7.0",
         "laravel/framework": ">=5.3",
-        "maknz/slack": "^1.7"
     },
-    "license": "BSD-2-Clause",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Notify\\Laravel\\" : "src/"
@@ -16,12 +15,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Notify\\Laravel\\NotifyServiceProvider",
-                "Notify\\Laravel\\SlackServiceProvider"
+                "Notify\\Laravel\\NotifyServiceProvider"
             ],
             "aliases": {
-                "Notify": "Notify\\Laravel\\Facades\\Notify",
-                "Slack": "Maknz\\Slack\\Facades\\Slack"
+                "Notify": "Notify\\Laravel\\Facades\\Notify"
             }
         }
     }

@@ -2,11 +2,7 @@
 
 namespace Notify\Laravel\Adapters;
 
-
 use Notify\Laravel\Exception\NotifyException;
-use Maknz\Slack\Attachment;
-use Maknz\Slack\AttachmentField;
-use Maknz\Slack\Facades\Slack;
 
 class SlackAdapter implements AdapterInterface
 {
@@ -19,10 +15,11 @@ class SlackAdapter implements AdapterInterface
      */
     function __construct($options)
     {
-        $options['to'] = config('slack.channel');
-        $options['endpoint'] = config('slack.endpoint');
-        $options['from'] = config('slack.username');
-        $options['icon'] = config('slack.icon');
+        $options['to'] = config('notify.slack.channel');
+        $options['endpoint'] = config('notify.slack.endpoint');
+        $options['from'] = config('notify.slack.username');
+        $options['icon'] = config('notify.slack.icon');
+        $options['mention'] = config('notify.slack.mention');
         $this->options = $options;
     }
 
@@ -47,95 +44,24 @@ class SlackAdapter implements AdapterInterface
                 }
             }
         }
-        $mention = '';
-        $message = Slack::createMessage();
-        $icon = $options['icon'];
-        if($icon != null){
-            // set icon if it is specified
-            $message->withIcon($icon);
-        }
 
-        if($content instanceof \Exception) {
+        if ($content instanceof \Exception) {
             // exception
-            $fields = [];
-            if (isset($options['fields'])) {
-                $fields =
-                    [
-                        new AttachmentField(['title' => 'HTTP_USER_AGENT', 'value' => $options['fields'][0]]),
-                        new AttachmentField(['title' => 'REQUEST_URI', 'value' => $options['fields'][1]]),
-                        new AttachmentField(['title' => 'IP_ADDRESS', 'value' => $options['fields'][2]])
-                    ];
-            }
-            if (isset($options['mention'])) {
-                $mention = $options['mention'] . "\n";
-            }
-            $message = $this->exceptionMessage($message, $fields, $content, $mention);
-
+            $notification = new \Notify\Laravel\Notifications\SlackErrorNotification($content, $options);
         } else {
             // text message
-            if(strlen($content) > 3000) {
-                $content = substr($content, 0, 3000);
-                $content = $content . " ... ----- TEXT IS LIMITED TO 3000 CHARS-----";
-            }
-            if (isset($options['mention'])) {
-                $mention = $options['mention'] . " ";
-            }
-
-            $content = (isset($options['raw']) && $options['raw']) ? $content : "```" . $content . "```";
-
-            $message->setText($mention . $content);
+            $notification = new \Notify\Laravel\Notifications\SlackTextNotification($content, $options);
         }
 
-        $message->from($options['from']);
-        $message->to($options['to']);
-
         try {
-            $message->send();
+
+            $this->notify($notification);
             // slack is limited to 1 message/second
             sleep(1);
 
         } catch (\Exception $exception) {
             throw new NotifyException($exception);
         }
-
-
-    }
-
-    /**
-     * Handles an exception object and returns as a message array.
-     * @param \Maknz\Slack\Message $message
-     * @param array $fields
-     * @param \Exception $exception
-     * @param string $mention
-     * @return mixed
-     */
-    private function exceptionMessage($message, $fields, \Exception $exception, $mention)
-    {
-        $className = get_class($exception);
-        if ($exception instanceof NotifyException) {
-            $className = "NotifyException";
-        }
-
-
-        $message->setText($mention . "*" . $className. "* in `" . $exception->getFile() . "` line: " . $exception->getLine());
-
-        $trace = $exception->getTraceAsString();
-        if(strlen($trace) > 1000) {
-            $trace = substr($trace, 0, 1000);
-            $trace = $trace . " ... ----- TRACE IS LIMITED TO 1000 CHARS -----";
-        }
-
-        $attachment = new Attachment([
-            'color' => 'danger',
-            'title' => $exception->getMessage(),
-            'text' => $trace,
-
-        ]);
-        if ($fields) {
-            $attachment->setFields($fields);
-        }
-        $message->attach($attachment);
-        return $message;
     }
 
     /**
@@ -151,15 +77,6 @@ class SlackAdapter implements AdapterInterface
         } else {
             return false;
         }
-    }
-
-    /**
-     * set new Icon(or stamp)
-     * @param string $url url or stamp string (e.g. :smile:) of an icon.
-     */
-    function setIcon($url)
-    {
-        $this->options['icon'] = $url;
     }
 
     /**
@@ -185,4 +102,8 @@ class SlackAdapter implements AdapterInterface
         $this->options['username'] = $username;
     }
 
+    private function routeNotificationForSlack()
+    {
+        return $this->options['channel'];
+    }
 }

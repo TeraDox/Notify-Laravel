@@ -6,6 +6,20 @@ return [
      */
     'default' => 'slack',
 
+    /**
+     * Settings for slack
+     */
+    'slack' => [
+        'endpoint' => env('NOTIFY_SLACK_ENDPOINT'),
+        'channel' => env('NOTIFY_SLACK_CHANNEL'),
+        'username' => env('NOTIFY_SLACK_USERNAME'),
+        'icon' => env('NOTIFY_SLACK_ICON'),
+
+        /**
+         * mention will be inserted at the beginning of contents. (e.g.)@here
+         */
+        'mention' => env('NOTIFY_SLACK_MENTION')
+    ],
 
     /**
      * Settings for mail
@@ -24,10 +38,4 @@ return [
         'slack' => env('NOTIFY_SLACK', false),
         'mail' => env('NOTIFY_EMAIL', false)
     ],
-
-    /**
-     * mention will be inserted at the beginning of contents. (e.g.)@here
-     */
-    'mention' => env('NOTIFY_SLACK_MENTION', ''),
-
 ];
