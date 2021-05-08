@@ -112,6 +112,6 @@ class SlackAdapter implements AdapterInterface
 
     private function routeNotificationForSlack()
     {
-        return $this->options['to'];
+        return $this->options['endpoint'];
     }
 }
