@@ -29,7 +29,7 @@ class SlackTextNotification extends Notification
      */
     public function via()
     {
-        return (config('notify.slack.notification')) ? ['slack'] : [];
+        return ['slack'];
     }
 
     /**

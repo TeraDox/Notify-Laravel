@@ -29,7 +29,7 @@ class SlackErrorNotification extends Notification
      */
     public function via()
     {
-        return (config('notify.slack.notification')) ? ['slack'] : [];
+        return ['slack'];
     }
 
     /**
@@ -39,12 +39,12 @@ class SlackErrorNotification extends Notification
     {
         $className = get_class($this->e);
         $content = config('notify.slack.mention') . " *{$className}* in `{$this->e->getFile()}` line: {$this->e->getLine()}";
-        $trace = $exception->getTraceAsString();
+        $trace = $this->e->getTraceAsString();
         if(strlen($trace) > 1000) {
             $trace = substr($trace, 0, 1000);
             $trace = $trace . " ... ----- TRACE IS LIMITED TO 1000 CHARS -----";
         }
-        
+
         $slackMessage = (new SlackMessage)->error()
             ->to($this->options['to'])
             ->linkNames()

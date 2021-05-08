@@ -95,7 +95,7 @@ class SlackAdapter implements AdapterInterface
     function setTo($channel)
     {
         if ($this->isCorrect($channel)) {
-            $this->options['channel'] = $channel;
+            $this->options['to'] = $channel;
         } else {
             throw new NotifyException(new \Exception("Input Channel is in a Wrong Format."));
         }
@@ -107,11 +107,11 @@ class SlackAdapter implements AdapterInterface
      */
     function setFrom($username)
     {
-        $this->options['username'] = $username;
+        $this->options['from'] = $username;
     }
 
     private function routeNotificationForSlack()
     {
-        return $this->options['channel'];
+        return $this->options['to'];
     }
 }
