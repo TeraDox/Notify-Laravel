@@ -5,9 +5,12 @@ namespace Notify\Laravel\Adapters;
 use Notify\Laravel\Exception\NotifyException;
 use Notify\Laravel\Notifications\SlackErrorNotification;
 use Notify\Laravel\Notifications\SlackTextNotification;
+use Illuminate\Notifications\Notifiable;
 
 class SlackAdapter implements AdapterInterface
 {
+    use Notifiable;
+
     /**
      * keys = ['from', 'to', 'icon', 'endpoint', 'fields', 'max_retry', 'force', 'mention' ]
      * @var array $options

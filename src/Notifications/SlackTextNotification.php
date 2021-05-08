@@ -18,7 +18,7 @@ class SlackTextNotification extends Notification
     /**
      * @param string $content
      */
-    public function __construct(string $conten, array $options = [])
+    public function __construct(string $content, array $options = [])
     {
         $this->content = $content;
         $this->options = $options;
