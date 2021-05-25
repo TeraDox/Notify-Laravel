@@ -48,7 +48,7 @@ class SlackTextNotification extends Notification
             $content = $this->options['mention'] . " " . $content;
         }
 
-        $slackMessage = (new SlackMessage)->linkNames()->content($content);
+        $slackMessage = (new SlackMessage)->to($this->options['to'])->linkNames()->content($content);
         if ($this->options['icon']) {
             $slackMessage->from($this->options['from'], $this->options['icon']);
         } else {
