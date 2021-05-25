@@ -4,7 +4,6 @@ namespace Notify\Laravel;
 
 
 use Illuminate\Contracts\Logging\Log;
-use Maknz\Slack\Facades\Slack;
 use Notify\Laravel\Adapters\SlackAdapter;
 use Notify\Laravel\Exception\NotifyException;
 
@@ -34,7 +33,7 @@ class Notify
             $options['fields'] = $fields;
         }
         // set adapter
-        $adapterName = config('notify.default');
+        $adapterName = config('notify.default', 'slack');
         $adapter = $adapter ?: $adapterName;
         $this->options = $options;
         $this->adapter = $this->createAdapter($adapter, true);

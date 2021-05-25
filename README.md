@@ -5,15 +5,11 @@ While sending an exception as a message, it will attach an information of "user 
 For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 
 
-**Attention:  maknz/slack is not going to be maintained.** (Reference: https://github.com/maknz/slack/issues/82)  
-I temporary created customized SlackServiceProvider for maknz/slack to adapt above Laravel 5.4. I may change the package in the feature.
-
-
 ## Requirements
 
-* PHP >=5.6.4
+* PHP >=7.0
 * laravel/framework >=5.3
-* maknz/slack ^1.7
+* laravel/slack-notification-channel: "^2.3.1"
 
 ## Installation
 ### 1. Use composer to install this package.
@@ -25,28 +21,22 @@ composer require tdx/notify-laravel
 ### 2. Add 'provider' and 'alias' for config\app.php. (No need above Laravel 5.5. Thanks to Auto-Discovery feature! YaY)
 ```
 'providers' => [ ...
-        Notify\Laravel\SlackServiceProvider::class,
         Notify\Laravel\NotifyServiceProvider::class,
         ...],
         
 'aliases' => [ ...
-        'Slack' => Maknz\Slack\Facades\Slack::class,
         'Notify' => Notify\Laravel\Facades\Notify::class,
         ...],
 ```
-I temporary created Customized `SlackServiceProvider` for maknz/slack package since they don't have time to maintain the package. 
-(Reference: https://github.com/maknz/slack/issues/82)
 
 ### 3. Publish necessary config and view files.
 ```
 php artisan vendor:publish --tag='notify-laravel'
-php artisan vendor:publish --provider="Maknz\Slack\SlackServiceProviderLaravel5"
 ```
 add `--force` option to overwrite previously published files.
 
 These commands should create  
 ```
-/config/slack.php,  
 /config/notify.php,  
 /resources/views/vendor/notify/mail.blade.php
 ```
