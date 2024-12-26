@@ -1,17 +1,16 @@
 {
     "name": "tdx/notify-laravel",
-    "description": "send notifications from laravel",
+    "description": "send notifications from Laravel",
     "type": "library",
     "require": {
-        "php": ">=7.0",
-        "laravel/framework": ">=5.3",
-        "laravel/slack-notification-channel": "^2.3.1"
-
+        "php": ">=8.1",
+        "laravel/framework": "^11.0",
+        "laravel/slack-notification-channel": "^3.0"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Notify\\Laravel\\" : "src/"
+            "Notify\\Laravel\\": "src/"
         }
     },
     "extra": {
@@ -23,5 +22,7 @@
                 "Notify": "Notify\\Laravel\\Facades\\Notify"
             }
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
