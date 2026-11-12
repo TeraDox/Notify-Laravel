@@ -25,17 +25,19 @@ class SlackErrorNotification extends Notification
     }
 
     /**
+     * @param object $notifiable
      * @return array
      */
-    public function via()
+    public function via(object $notifiable)
     {
         return ['slack'];
     }
 
     /**
+     * @param object $notifiable
      * @return \Illuminate\Notifications\Messages\SlackMessage
      */
-    public function toSlack()
+    public function toSlack(object $notifiable)
     {
         $className = get_class($this->e);
         $content = config('notify.slack.mention') . " *{$className}* in `{$this->e->getFile()}` line: {$this->e->getLine()}";
