@@ -7,9 +7,9 @@ For Laravel, using this class in a Exceptions\Handler.php class is prefered.
 
 ## Requirements
 
-* PHP >=7.0
-* laravel/framework >=5.3
-* laravel/slack-notification-channel: "^2.3.1"
+* PHP ^8.3
+* laravel/framework ^13.0
+* laravel/slack-notification-channel ^3.9
 
 ## Installation
 ### 1. Use composer to install this package.
@@ -38,7 +38,7 @@ add `--force` option to overwrite previously published files.
 These commands should create  
 ```
 /config/notify.php,  
-/resources/views/vendor/notify/mail.blade.php
+/resources/views/vendor/notify-laravel/mail.blade.php
 ```
 
 
@@ -49,34 +49,37 @@ php artisan config:clear
 It will clear the config cache.
 
 
-### 4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account. You need to write Webhook URL in config\slack.php file to send a message via Slack.
+### 4. [Create an incoming webhook](https://my.slack.com/services/new/incoming-webhook) on your Slack account. You need to set the Webhook URL to `NOTIFY_SLACK_ENDPOINT` in .env file to send a message via Slack.
 
 
 ## Settings
-Write values for some config files.
+Settings are read from config/notify.php, which refers to the values in .env file.
 
-### In config\slack.php,
+### In .env, set suitable values for Slack,
 ```
-'endpoint'= (e.g.) 'https://hooks.slack.com/services/xxx/yyy/zzz' //webhook URL for your incoming webhook
-'channel'= (e.g.) '#general' // channnel or username where you want to send a message. null for default
-'username'= (e.g.) 'Robot' // username that is going to be displayed on the message. null for default
-'link_names' = (e.g.) true // needs to be true to send with mention <- NEW
+NOTIFY_SLACK_ENDPOINT= (e.g.) https://hooks.slack.com/services/xxx/yyy/zzz  // webhook URL for your incoming webhook
+NOTIFY_SLACK_CHANNEL= (e.g.) "#general"  // channel or username where you want to send a message. empty for default
+NOTIFY_SLACK_USERNAME= (e.g.) Robot  // username that is going to be displayed on the message. empty for default
+NOTIFY_SLACK_ICON= (e.g.) :smile:  // icon URL or emoji. empty for default
 ```
+Values starting with `#` must be quoted (e.g. `"#general"`). Otherwise they are treated as comments and become empty.
 
 ### In .env, set suitable values for mail,
 ```
-MAIL_DRIVER= (e.g.) smtp
+MAIL_MAILER= (e.g.) smtp
 MAIL_HOST= (e.g.) smtp.gmail.com
 MAIL_PORT= (e.g.) 465
 MAIL_USERNAME= (e.g.) YOUR_EMAIL_ADDRESS
 MAIL_PASSWORD= (e.g.) YOUR_EMAIL_PASSWORD
 MAIL_ENCRYPTION= (e.g.) ssl
+MAIL_FROM_ADDRESS= (e.g.) YOUR_EMAIL_ADDRESS
+MAIL_FROM_NAME= (e.g.) Notify
 ```
 
 and add
 ```
 NOTIFY_SLACK=(e.g.) true
-NOTIFY_MAIL=(e.g.) true
+NOTIFY_EMAIL=(e.g.) true
 NOTIFY_SLACK_MENTION=(e.g.) @here
 ```
 If the value = true, the adapter is turned on (The adapter can send a message). If the value = false, the adapter is turned off (The adapter cannot send a message). If there is no value defined in .env file, false is used as default.
@@ -134,39 +137,36 @@ Parameter | Type | Description
 
 ## Example of Implementation using Laravel Exception Handler
 
-In App\Exceptions\Handler class,
+In bootstrap/app.php,
 ```
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Support\Facades\Log;
 use Notify\Laravel\Exception\NotifyException;
 
-    public function report(Exception $exception)
-    {
-        if ($this->shouldntReport($e)) {
-            return;
-        }
-
-        parent::report($exception);
-
-        try {
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->report(function (\Exception $exception) {
             try {
                 // Use Notify class here.
                 \Notify::send($exception);  // Send with default settings.
-
             } catch (NotifyException $ne) {
+                Log::error($ne);
                 try {
                     // send via mail. (Another way to send a notification if first one failed.)
-                    \Notify::send($ne, ['to' => 'YOUR_EMAIL_ADDRESS'], 'mail');
-                    parent::report($ne);
+                    // Use a new instance so that the default adapter of the Facade is not changed to 'mail'.
+                    (new \Notify\Laravel\Notify())->send($ne, ['to' => 'YOUR_EMAIL_ADDRESS'], 'mail');
                 } catch (NotifyException $ne2) {
-                    // Problem of mail settings. Dont't use Notify class here to avoid loop.
-                    parent::report($ne2);
+                    // Problem of mail settings.
+                    Log::error($ne2);
                 }
+            } catch (\Throwable $e) {
+                // Notify class should throw only NotifyException, but just in case, catch others here.
+                Log::error($e);
             }
-        } catch (Exception $e) {
-            // Notify class should throw only NotifyException, but just in case, catch other Exception here to avoid loop.
-            parent::report($e);
-        }
-    }
+            // Don't call report() here. It calls this callback again and causes a loop.
+        });
+    })
 ```
+The exception is also reported to laravel.log as usual after this callback.
     
 ## How to Create Other Adapter
 
