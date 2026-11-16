@@ -56,26 +56,34 @@ It will clear the config cache.
 Settings are read from config/notify.php, which refers to the values in .env file.
 
 ### In .env, set suitable values for Slack,
-```
-NOTIFY_SLACK_ENDPOINT= (e.g.) https://hooks.slack.com/services/xxx/yyy/zzz  // webhook URL for your incoming webhook
-NOTIFY_SLACK_CHANNEL= (e.g.) "#general"  // channel or username where you want to send a message. empty for default
-NOTIFY_SLACK_USERNAME= (e.g.) Robot  // username that is going to be displayed on the message. empty for default
-NOTIFY_SLACK_ICON= (e.g.) :smile:  // icon URL or emoji. empty for default
+The values below are examples. Replace them with your own values.
+```dotenv
+# Webhook URL for your incoming webhook
+NOTIFY_SLACK_ENDPOINT=https://hooks.slack.com/services/xxx/yyy/zzz
+# Channel or username where you want to send a message. Empty for default
+NOTIFY_SLACK_CHANNEL="#general"
+# Username that is going to be displayed on the message. Empty for default
+NOTIFY_SLACK_USERNAME=Robot
+# Icon URL or emoji. Empty for default
+NOTIFY_SLACK_ICON=:smile:
 ```
 Values starting with `#` must be quoted (e.g. `"#general"`). Otherwise they are treated as comments and become empty.
 
 ### In .env, set suitable values for mail,
+The values below are examples. Replace them with your own values.
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USERNAME=your-address@example.com
+MAIL_PASSWORD=your-password
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=your-address@example.com
+MAIL_FROM_NAME=Notify
+# Display name only for notification mails. Empty to use MAIL_FROM_NAME
+NOTIFY_MAIL_NAME=NotifyBot
 ```
-MAIL_MAILER= (e.g.) smtp
-MAIL_HOST= (e.g.) smtp.gmail.com
-MAIL_PORT= (e.g.) 465
-MAIL_USERNAME= (e.g.) YOUR_EMAIL_ADDRESS
-MAIL_PASSWORD= (e.g.) YOUR_EMAIL_PASSWORD
-MAIL_ENCRYPTION= (e.g.) ssl
-MAIL_FROM_ADDRESS= (e.g.) YOUR_EMAIL_ADDRESS
-MAIL_FROM_NAME= (e.g.) Notify
-NOTIFY_MAIL_NAME= (e.g.) NotifyBot  // display name only for notification mails. empty to use MAIL_FROM_NAME
-```
+`MAIL_USERNAME` is also used as the default recipient of notification mails.
 
 The display name of notification mails is decided in the following order.
 1. `from` option (or `setFrom()`)
@@ -85,10 +93,10 @@ The display name of notification mails is decided in the following order.
 If you published config/notify.php before this version, it has `'name' => 'MailTestBot'`, which is always used. Change it to `'name' => env('NOTIFY_MAIL_NAME')`, or publish it again with `--force`.
 
 and add
-```
-NOTIFY_SLACK=(e.g.) true
-NOTIFY_EMAIL=(e.g.) true
-NOTIFY_SLACK_MENTION=(e.g.) @here
+```dotenv
+NOTIFY_SLACK=true
+NOTIFY_EMAIL=true
+NOTIFY_SLACK_MENTION=@here
 ```
 If the value = true, the adapter is turned on (The adapter can send a message). If the value = false, the adapter is turned off (The adapter cannot send a message). If there is no value defined in .env file, false is used as default.
 Mention will be attached at the beginning of the content.
