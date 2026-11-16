@@ -3,7 +3,6 @@
 namespace Notify\Laravel;
 
 
-use Illuminate\Contracts\Logging\Log;
 use Notify\Laravel\Adapters\SlackAdapter;
 use Notify\Laravel\Exception\NotifyException;
 

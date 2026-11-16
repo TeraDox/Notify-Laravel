@@ -25,17 +25,19 @@ class SlackTextNotification extends Notification
     }
 
     /**
+     * @param object $notifiable
      * @return array
      */
-    public function via()
+    public function via(object $notifiable)
     {
         return ['slack'];
     }
 
     /**
+     * @param object $notifiable
      * @return \Illuminate\Notifications\Messages\SlackMessage
      */
-    public function toSlack()
+    public function toSlack(object $notifiable)
     {
         $content = $this->content;
         if(strlen($content) > 3000) {
