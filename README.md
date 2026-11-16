@@ -166,6 +166,8 @@ use Notify\Laravel\Exception\NotifyException;
         });
     })
 ```
+This example notifies only `\Exception` and its subclasses (e.g. `RuntimeException`). `\Error` such as `TypeError` is not notified by this example, but it is still reported to laravel.log as usual.
+
 The exception is also reported to laravel.log as usual after this callback.
 If anything is thrown from this callback, Laravel stops reporting and the original exception is not logged. So catch `\Throwable` in every path, including the fallback.
 
