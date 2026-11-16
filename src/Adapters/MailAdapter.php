@@ -72,7 +72,7 @@ class MailAdapter implements AdapterInterface
             Mail::send('notify-laravel::mail', $data, function ($message) use ($options) {
                 // The from address resolved by the mailer (mail.mailers.<name>.from or mail.from) is already set.
                 $from = $message->getSymfonyMessage()->getFrom();
-                if ($from) {
+                if ($from && !empty($options['from'])) {
                     $message->from($from[0]->getAddress(), $options['from']);
                 }
                 $message->to($options['to'])->subject($options['subject']);

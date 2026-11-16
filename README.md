@@ -74,7 +74,15 @@ MAIL_PASSWORD= (e.g.) YOUR_EMAIL_PASSWORD
 MAIL_ENCRYPTION= (e.g.) ssl
 MAIL_FROM_ADDRESS= (e.g.) YOUR_EMAIL_ADDRESS
 MAIL_FROM_NAME= (e.g.) Notify
+NOTIFY_MAIL_NAME= (e.g.) NotifyBot  // display name only for notification mails. empty to use MAIL_FROM_NAME
 ```
+
+The display name of notification mails is decided in the following order.
+1. `from` option (or `setFrom()`)
+2. `notify.mail.name` in config/notify.php (`NOTIFY_MAIL_NAME`)
+3. The name of the mailer (`mail.mailers.<name>.from.name`, or `MAIL_FROM_NAME`)
+
+If you published config/notify.php before this version, it has `'name' => 'MailTestBot'`, which is always used. Change it to `'name' => env('NOTIFY_MAIL_NAME')`, or publish it again with `--force`.
 
 and add
 ```
@@ -128,7 +136,7 @@ For MailAdapter,
 Parameter | Type | Description
 ----- | ---- | -----------
 `to` | string | email address that messages is going to be sent to.
-`from` | string | username for the email. This does not need to be actual email address.
+`from` | string | display name for the email. The from address is the one of the mailer.
 `subject` | string | subject for the email.
 `fields` | array | has UserAgent and RequestUri if there exist.
 `max_retry` | bool | maximum number of retries. (default `max_retry = 3`)
@@ -171,7 +179,7 @@ This example notifies only `\Exception` and its subclasses (e.g. `RuntimeExcepti
 The exception is also reported to laravel.log as usual after this callback.
 If anything is thrown from this callback, Laravel stops reporting and the original exception is not logged. So catch `\Throwable` in every path, including the fallback.
 
-The mail adapter uses the from address of the mailer (`mail.mailers.<name>.from`, or `mail.from` if not set), and the `from` option is used as the display name.
+The mail adapter uses the from address of the mailer (`mail.mailers.<name>.from`, or `mail.from` if not set). See the mail settings above for the display name.
     
 ## How to Create Other Adapter
 

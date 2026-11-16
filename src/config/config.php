@@ -26,7 +26,10 @@ return [
      */
     'mail' => [
         'address' => env('MAIL_USERNAME'),
-        'name' => 'MailTestBot',
+        /**
+         * display name of the sender. null to use the name of the mailer (e.g. MAIL_FROM_NAME)
+         */
+        'name' => env('NOTIFY_MAIL_NAME'),
         'subject' => 'This is Subject!'
     ],
 
