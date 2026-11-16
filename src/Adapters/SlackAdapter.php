@@ -67,7 +67,7 @@ class SlackAdapter implements AdapterInterface
             $this->notify($notification);
             sleep(1); // slack is limited to 1 message/second
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             throw new NotifyException($exception);
         }
     }

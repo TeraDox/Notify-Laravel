@@ -154,9 +154,9 @@ use Notify\Laravel\Exception\NotifyException;
                     // send via mail. (Another way to send a notification if first one failed.)
                     // Use a new instance so that the default adapter of the Facade is not changed to 'mail'.
                     (new \Notify\Laravel\Notify())->send($ne, ['to' => 'YOUR_EMAIL_ADDRESS'], 'mail');
-                } catch (NotifyException $ne2) {
+                } catch (\Throwable $e2) {
                     // Problem of mail settings.
-                    Log::error($ne2);
+                    Log::error($e2);
                 }
             } catch (\Throwable $e) {
                 // Notify class should throw only NotifyException, but just in case, catch others here.
@@ -167,6 +167,9 @@ use Notify\Laravel\Exception\NotifyException;
     })
 ```
 The exception is also reported to laravel.log as usual after this callback.
+If anything is thrown from this callback, Laravel stops reporting and the original exception is not logged. So catch `\Throwable` in every path, including the fallback.
+
+The mail adapter uses the from address of the mailer (`mail.mailers.<name>.from`, or `mail.from` if not set), and the `from` option is used as the display name.
     
 ## How to Create Other Adapter
 
